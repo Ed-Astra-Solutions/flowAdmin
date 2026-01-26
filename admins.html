@@ -300,8 +300,9 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        // API Configuration
-        const API_BASE = '/api/admin';
+        // API Configuration - use production API on GitHub Pages
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const API_BASE = isLocal ? '/api/admin' : 'https://api.flowhydration.in/api/admin';
         
         // State
         let admins = [];

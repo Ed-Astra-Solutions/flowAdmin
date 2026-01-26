@@ -350,7 +350,9 @@
     </div>
 
     <script>
-        const API_BASE = '/api/admin';
+        // API Configuration - use production API on GitHub Pages
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const API_BASE = isLocal ? '/api/admin' : 'https://api.flowhydration.in/api/admin';
         
         // Check if already logged in
         const token = localStorage.getItem('adminToken');

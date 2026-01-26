@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers - Flow Admin Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">F</div>
+                    <span class="logo-text">Flow</span>
+                    <span class="logo-badge">Admin</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                        </svg>
+                        Dashboard
+                    </a>
+                    <a href="products.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        </svg>
+                        Products
+                    </a>
+                    <a href="orders.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <path d="M16 10a4 4 0 01-8 0"/>
+                        </svg>
+                        Orders
+                    </a>
+                    <a href="customers.html" class="nav-item active">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 010 7.75"/>
+                        </svg>
+                        Customers
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Analytics</div>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="20" x2="12" y2="10"/>
+                            <line x1="18" y1="20" x2="18" y2="4"/>
+                            <line x1="6" y1="20" x2="6" y2="16"/>
+                        </svg>
+                        Reports
+                    </a>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"/>
+                            <line x1="12" y1="20" x2="12" y2="4"/>
+                            <line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                        Sales
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Settings</div>
+                    <a href="admins.html" class="nav-item" id="adminsNavItem" style="display: none;">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                            <circle cx="8.5" cy="7" r="4"/>
+                            <path d="M20 8v6M23 11h-6"/>
+                        </svg>
+                        Manage Admins
+                    </a>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+                        </svg>
+                        Settings
+                    </a>
+                    <a href="#" class="nav-item" onclick="logout(); return false;">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                        Logout
+                    </a>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">Admin</div>
+                        <div class="user-role" id="userRole">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="12" x2="21" y2="12"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <line x1="3" y1="18" x2="21" y2="18"/>
+                        </svg>
+                    </button>
+                    <div>
+                        <h1 class="page-title">Customers</h1>
+                        <div class="breadcrumb">
+                            <span>Manage your customer base</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        <input type="text" placeholder="Search customers..." id="searchInput">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid" style="margin-bottom: 24px;">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(0, 212, 255, 0.15);">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 010 7.75"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="totalCustomers">-</div>
+                        <div class="stat-label">Total Customers</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(34, 197, 94, 0.15);">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                            <circle cx="8.5" cy="7" r="4"/>
+                            <path d="M20 8v6M23 11h-6"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="newCustomers">-</div>
+                        <div class="stat-label">New (30 days)</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(168, 85, 247, 0.15);">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2">
+                            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="withCart">-</div>
+                        <div class="stat-label">With Cart Items</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customers Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">All Customers</h3>
+                    <div class="card-actions">
+                        <button class="btn btn-secondary" onclick="loadCustomers()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 4v6h-6M1 20v-6h6"/>
+                                <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+                            </svg>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="customersTable">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Mobile</th>
+                                <th>Email</th>
+                                <th>Addresses</th>
+                                <th>Cart Items</th>
+                                <th>Registered</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 40px;">
+                                    <div class="loading-spinner"></div>
+                                    <p style="margin-top: 16px; color: var(--text-muted);">Loading customers...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination" id="pagination" style="display: none;">
+                    <button class="pagination-btn" id="prevBtn" onclick="changePage(-1)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"/>
+                        </svg>
+                        Previous
+                    </button>
+                    <span class="pagination-info" id="paginationInfo">Page 1 of 1</span>
+                    <button class="pagination-btn" id="nextBtn" onclick="changePage(1)">
+                        Next
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Customer Details Modal -->
+    <div class="modal-overlay" id="customerModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Customer Details</h3>
+                <button class="modal-close" onclick="closeModal('customerModal')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="customerDetails">
+                <!-- Customer details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('customerModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .customer-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #00ff88);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: #000;
+        }
+        .customer-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .customer-id {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-info {
+            background: rgba(0, 212, 255, 0.15);
+            color: var(--primary);
+        }
+        .badge-success {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 16px;
+            border-top: 1px solid var(--border);
+        }
+        .pagination-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pagination-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .pagination-info {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .detail-section {
+            margin-bottom: 20px;
+        }
+        .detail-section h4 {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .detail-item {
+            background: var(--bg-secondary);
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .detail-value {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .address-card {
+            background: var(--bg-secondary);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .address-type {
+            font-size: 12px;
+            color: var(--primary);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        .cart-item-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            object-fit: cover;
+        }
+        .cart-item-details {
+            flex: 1;
+        }
+        .cart-item-name {
+            font-weight: 500;
+        }
+        .cart-item-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+
+    <script src="assets/js/admin.js"></script>
+    <script>
+        // API Configuration - use same as admin.js
+        const CUSTOMERS_API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? '/api/admin'
+            : 'https://api.flowhydration.in/api/admin';
+        
+        let currentPage = 1;
+        let totalPages = 1;
+        let searchTimeout = null;
+
+        // Override the initializeApp from admin.js for this page
+        async function initializeApp() {
+            const isAuthed = await checkAuth();
+            if (!isAuthed) return;
+            
+            loadStats();
+            loadCustomers();
+            
+            // Search input handler
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    currentPage = 1;
+                    loadCustomers(e.target.value);
+                }, 300);
+            });
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`${CUSTOMERS_API}/customers-stats`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('totalCustomers').textContent = data.data.total || 0;
+                    document.getElementById('newCustomers').textContent = data.data.newCustomers || 0;
+                    document.getElementById('withCart').textContent = data.data.withCart || 0;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function loadCustomers(search = '') {
+            const tbody = document.getElementById('customersTableBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 40px;">
+                        <div class="loading-spinner"></div>
+                        <p style="margin-top: 16px; color: var(--text-muted);">Loading customers...</p>
+                    </td>
+                </tr>
+            `;
+
+            try {
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    limit: 20,
+                    search: search
+                });
+                
+                const response = await fetch(`${CUSTOMERS_API}/customers?${params}`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    renderCustomers(data.data.customers);
+                    updatePagination(data.data.pagination);
+                } else {
+                    throw new Error(data.error || 'Failed to load customers');
+                }
+            } catch (error) {
+                console.error('Error loading customers:', error);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px;">
+                            <p style="color: var(--text-muted);">Failed to load customers</p>
+                            <button class="btn btn-secondary" onclick="loadCustomers()" style="margin-top: 12px;">Retry</button>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function renderCustomers(customers) {
+            const tbody = document.getElementById('customersTableBody');
+            
+            if (!customers || customers.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px;">
+                            <div class="empty-icon" style="width: 60px; height: 60px; background: var(--bg-secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2">
+                                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                                    <circle cx="9" cy="7" r="4"/>
+                                </svg>
+                            </div>
+                            <p style="color: var(--text-muted);">No customers found</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = customers.map(customer => {
+                const initial = customer.name ? customer.name.charAt(0).toUpperCase() : '?';
+                const name = customer.name || 'Unknown';
+                const email = customer.email || '-';
+                const addressCount = customer.addresses?.length || 0;
+                const cartCount = customer.cart?.length || 0;
+                const registeredDate = new Date(customer.createdAt).toLocaleDateString('en-IN', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                });
+
+                return `
+                    <tr>
+                        <td>
+                            <div class="customer-info">
+                                <div class="customer-avatar">${initial}</div>
+                                <div>
+                                    <div class="customer-name">${name}</div>
+                                    <div class="customer-id">${customer._id.slice(-8)}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>+91 ${customer.mobile}</td>
+                        <td>${email}</td>
+                        <td><span class="badge badge-info">${addressCount}</span></td>
+                        <td><span class="badge ${cartCount > 0 ? 'badge-success' : 'badge-warning'}">${cartCount}</span></td>
+                        <td>${registeredDate}</td>
+                        <td>
+                            <button class="btn-icon" onclick="viewCustomer('${customer._id}')" title="View Details">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updatePagination(pagination) {
+            const paginationEl = document.getElementById('pagination');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const info = document.getElementById('paginationInfo');
+            
+            totalPages = pagination.pages;
+            currentPage = pagination.page;
+            
+            if (totalPages > 1) {
+                paginationEl.style.display = 'flex';
+                info.textContent = `Page ${currentPage} of ${totalPages}`;
+                prevBtn.disabled = currentPage <= 1;
+                nextBtn.disabled = currentPage >= totalPages;
+            } else {
+                paginationEl.style.display = 'none';
+            }
+        }
+
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                loadCustomers(document.getElementById('searchInput').value);
+            }
+        }
+
+        async function viewCustomer(id) {
+            const detailsEl = document.getElementById('customerDetails');
+            detailsEl.innerHTML = '<div class="loading-spinner" style="margin: 40px auto;"></div>';
+            openModal('customerModal');
+
+            try {
+                const response = await fetch(`${CUSTOMERS_API}/customers/${id}`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    renderCustomerDetails(data.data);
+                } else {
+                    throw new Error(data.error || 'Failed to load customer');
+                }
+            } catch (error) {
+                console.error('Error loading customer:', error);
+                detailsEl.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Failed to load customer details</p>';
+            }
+        }
+
+        function renderCustomerDetails(customer) {
+            const detailsEl = document.getElementById('customerDetails');
+            
+            const name = customer.name || 'Not set';
+            const email = customer.email || 'Not set';
+            const dob = customer.dateOfBirth 
+                ? new Date(customer.dateOfBirth).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
+                : 'Not set';
+            const registered = new Date(customer.createdAt).toLocaleDateString('en-IN', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Preferences
+            const prefs = customer.preferences || {};
+            const prefsList = [
+                prefs.emailNotifications !== false ? '✓ Email' : '✗ Email',
+                prefs.smsNotifications !== false ? '✓ SMS' : '✗ SMS',
+                prefs.whatsappNotifications !== false ? '✓ WhatsApp' : '✗ WhatsApp',
+                prefs.promotionalOffers !== false ? '✓ Promo' : '✗ Promo'
+            ].join(' &nbsp;|&nbsp; ');
+
+            // Addresses
+            const addressesHtml = customer.addresses?.length > 0
+                ? customer.addresses.map(addr => `
+                    <div class="address-card">
+                        <div class="address-type">${addr.type || 'home'} ${addr.isDefault ? '(Default)' : ''}</div>
+                        <div>${addr.fullAddress || `${addr.line1 || ''} ${addr.line2 || ''}`}</div>
+                        <div style="color: var(--text-muted); font-size: 13px;">${addr.city}, ${addr.state} - ${addr.pincode}</div>
+                    </div>
+                `).join('')
+                : '<p style="color: var(--text-muted);">No addresses saved</p>';
+
+            // Cart
+            const cartHtml = customer.cart?.length > 0
+                ? customer.cart.map(item => `
+                    <div class="cart-item">
+                        <img src="${item.image || '/placeholder.png'}" class="cart-item-image" onerror="this.style.display='none'">
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-meta">${item.flavour || ''} × ${item.quantity} • ₹${item.price}</div>
+                        </div>
+                    </div>
+                `).join('')
+                : '<p style="color: var(--text-muted);">Cart is empty</p>';
+
+            detailsEl.innerHTML = `
+                <div class="detail-section">
+                    <h4>Basic Information</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Name</div>
+                            <div class="detail-value">${name}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Mobile</div>
+                            <div class="detail-value">+91 ${customer.mobile}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Email</div>
+                            <div class="detail-value">${email}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Date of Birth</div>
+                            <div class="detail-value">${dob}</div>
+                        </div>
+                        <div class="detail-item" style="grid-column: span 2;">
+                            <div class="detail-label">Registered</div>
+                            <div class="detail-value">${registered}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>Notification Preferences</h4>
+                    <div style="font-size: 14px; color: var(--text-secondary);">${prefsList}</div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>Addresses (${customer.addresses?.length || 0})</h4>
+                    ${addressesHtml}
+                </div>
+
+                <div class="detail-section">
+                    <h4>Cart (${customer.cart?.length || 0} items)</h4>
+                    ${cartHtml}
+                </div>
+            `;
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+    </script>
+</body>
+</html>

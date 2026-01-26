@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders - Flow Admin Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">F</div>
+                    <span class="logo-text">Flow</span>
+                    <span class="logo-badge">Admin</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                        </svg>
+                        Dashboard
+                    </a>
+                    <a href="products.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        </svg>
+                        Products
+                    </a>
+                    <a href="orders.html" class="nav-item active">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <path d="M16 10a4 4 0 01-8 0"/>
+                        </svg>
+                        Orders
+                        <span class="nav-badge" id="pendingOrdersBadge">0</span>
+                    </a>
+                    <a href="customers.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 010 7.75"/>
+                        </svg>
+                        Customers
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Analytics</div>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="20" x2="12" y2="10"/>
+                            <line x1="18" y1="20" x2="18" y2="4"/>
+                            <line x1="6" y1="20" x2="6" y2="16"/>
+                        </svg>
+                        Reports
+                    </a>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"/>
+                            <line x1="12" y1="20" x2="12" y2="4"/>
+                            <line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                        Sales
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Settings</div>
+                    <a href="admins.html" class="nav-item" id="adminsNavItem" style="display: none;">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                            <circle cx="8.5" cy="7" r="4"/>
+                            <path d="M20 8v6M23 11h-6"/>
+                        </svg>
+                        Manage Admins
+                    </a>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+                        </svg>
+                        Settings
+                    </a>
+                    <a href="#" class="nav-item" onclick="logout(); return false;">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                        Logout
+                    </a>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">A</div>
+                    <div class="user-details">
+                        <div class="user-name">Admin</div>
+                        <div class="user-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="12" x2="21" y2="12"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <line x1="3" y1="18" x2="21" y2="18"/>
+                        </svg>
+                    </button>
+                    <div>
+                        <h1 class="page-title">Orders</h1>
+                        <div class="breadcrumb">
+                            <a href="index.html">Dashboard</a>
+                            <span>/</span>
+                            <span>Orders</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        <input type="text" id="orderSearchInput" placeholder="Search orders...">
+                    </div>
+                    <button class="header-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                            <path d="M13.73 21a2 2 0 01-3.46 0"/>
+                        </svg>
+                        <span class="notification-dot"></span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon blue">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                                    <line x1="3" y1="6" x2="21" y2="6"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalOrders">0</div>
+                        <div class="stat-label">Total Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon orange">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="pendingOrders">0</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon purple">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="1" y="3" width="15" height="13"/>
+                                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                                    <circle cx="5.5" cy="18.5" r="2.5"/>
+                                    <circle cx="18.5" cy="18.5" r="2.5"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="shippedOrders">0</div>
+                        <div class="stat-label">Shipped</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon green">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="deliveredOrders">0</div>
+                        <div class="stat-label">Delivered</div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="card" style="margin-bottom: 20px;">
+                    <div class="card-body" style="padding: 16px;">
+                        <div class="filters-row">
+                            <select class="form-select" id="statusFilter">
+                                <option value="">All Statuses</option>
+                                <option value="pending">Pending</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="processing">Processing</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="out_for_delivery">Out for Delivery</option>
+                                <option value="delivered">Delivered</option>
+                                <option value="cancelled">Cancelled</option>
+                                <option value="returned">Returned</option>
+                            </select>
+                            <select class="form-select" id="paymentFilter">
+                                <option value="">All Payments</option>
+                                <option value="pending">Payment Pending</option>
+                                <option value="paid">Paid</option>
+                                <option value="failed">Failed</option>
+                                <option value="refunded">Refunded</option>
+                            </select>
+                            <button class="btn btn-secondary btn-sm" onclick="loadOrders()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    <path d="M9 12l2 2 4-4"/>
+                                </svg>
+                                Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">All Orders</h2>
+                        <div class="card-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="exportOrders()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                Export
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="loading-spinner" id="loadingSpinner" style="display: none;"></div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Order #</th>
+                                        <th>Customer</th>
+                                        <th>Items</th>
+                                        <th>Total</th>
+                                        <th>Payment</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ordersTableBody">
+                                    <!-- Orders will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <div class="pagination" id="pagination">
+                            <!-- Pagination will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Order Details - <span id="orderModalNumber"></span></h3>
+                <button class="modal-close" onclick="closeModal('orderModal')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="orderModalBody">
+                <!-- Order details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('orderModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Status Modal -->
+    <div class="modal-overlay" id="statusModal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Update Order Status</h3>
+                <button class="modal-close" onclick="closeModal('statusModal')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="statusForm" onsubmit="submitStatusUpdate(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="statusOrderId">
+                    <div class="form-group">
+                        <label class="form-label">New Status *</label>
+                        <select class="form-select" id="newStatus" required>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="processing">Processing</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="out_for_delivery">Out for Delivery</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="returned">Returned</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="trackingGroup" style="display: none;">
+                        <label class="form-label">Tracking Number</label>
+                        <input type="text" class="form-input" id="trackingNumber" placeholder="Enter tracking number">
+                    </div>
+                    <div class="form-group" id="trackingUrlGroup" style="display: none;">
+                        <label class="form-label">Tracking URL</label>
+                        <input type="url" class="form-input" id="trackingUrl" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Note</label>
+                        <textarea class="form-textarea" id="statusNote" placeholder="Add a note about this status change"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('statusModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Additional styles for orders page -->
+    <style>
+        .filters-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .form-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text);
+            font-size: 14px;
+            min-width: 150px;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .order-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+        
+        .order-status.pending { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+        .order-status.confirmed { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+        .order-status.processing { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; }
+        .order-status.shipped { background: rgba(6, 182, 212, 0.15); color: #06b6d4; }
+        .order-status.out_for_delivery { background: rgba(249, 115, 22, 0.15); color: #f97316; }
+        .order-status.delivered { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+        .order-status.cancelled { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .order-status.returned { background: rgba(107, 114, 128, 0.15); color: #6b7280; }
+        
+        .payment-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+        }
+        
+        .payment-status.paid { color: #22c55e; }
+        .payment-status.pending { color: #fbbf24; }
+        .payment-status.failed { color: #ef4444; }
+        .payment-status.refunded { color: #6b7280; }
+        
+        .payment-method {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        
+        .order-items-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .order-items-preview span {
+            font-size: 13px;
+        }
+        
+        .order-items-more {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        
+        .customer-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .customer-cell .name {
+            font-weight: 500;
+        }
+        
+        .customer-cell .mobile {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--card-bg);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .pagination button:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .pagination button.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #000;
+        }
+        
+        .pagination-info {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        
+        /* Order detail modal styles */
+        .order-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        
+        .order-detail-section {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        
+        .order-detail-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .order-detail-section.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        
+        .detail-value {
+            font-weight: 500;
+            font-size: 13px;
+        }
+        
+        .order-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--card-bg);
+            border-radius: 8px;
+        }
+        
+        .order-item-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .order-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .order-item-info {
+            flex: 1;
+        }
+        
+        .order-item-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .order-item-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .order-item-price {
+            text-align: right;
+        }
+        
+        .order-item-price .qty {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .order-item-price .total {
+            font-weight: 600;
+        }
+        
+        .status-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        
+        .timeline-item {
+            display: flex;
+            gap: 12px;
+            padding: 8px 0;
+            position: relative;
+        }
+        
+        .timeline-item:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 9px;
+            top: 28px;
+            width: 2px;
+            height: calc(100% - 8px);
+            background: var(--border);
+        }
+        
+        .timeline-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .timeline-dot svg {
+            width: 12px;
+            height: 12px;
+            stroke: #000;
+        }
+        
+        .timeline-content {
+            flex: 1;
+        }
+        
+        .timeline-status {
+            font-weight: 500;
+            text-transform: capitalize;
+            margin-bottom: 2px;
+        }
+        
+        .timeline-note {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+        
+        .timeline-time {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        
+        @media (max-width: 768px) {
+            .order-detail-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-row {
+                flex-direction: column;
+            }
+            
+            .form-select {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <script src="assets/js/admin.js"></script>
+    <script>
+        // Orders page specific code
+        let orders = [];
+        let currentOrderPage = 1;
+        let ordersPagination = {};
+        let currentOrderId = null;
+
+        // Override initializeApp for orders page
+        const originalInitializeApp = initializeApp;
+        initializeApp = async function() {
+            const isAuthed = await checkAuth();
+            if (!isAuthed) return;
+            
+            await loadOrderStats();
+            await loadOrders();
+            setupOrdersEventListeners();
+        };
+
+        function setupOrdersEventListeners() {
+            // Search
+            const searchInput = document.getElementById('orderSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', debounce(() => {
+                    currentOrderPage = 1;
+                    loadOrders();
+                }, 300));
+            }
+
+            // Filter changes
+            document.getElementById('statusFilter')?.addEventListener('change', () => {
+                currentOrderPage = 1;
+                loadOrders();
+            });
+
+            document.getElementById('paymentFilter')?.addEventListener('change', () => {
+                currentOrderPage = 1;
+                loadOrders();
+            });
+
+            // Status change shows/hides tracking fields
+            document.getElementById('newStatus')?.addEventListener('change', (e) => {
+                const showTracking = ['shipped', 'out_for_delivery'].includes(e.target.value);
+                document.getElementById('trackingGroup').style.display = showTracking ? 'block' : 'none';
+                document.getElementById('trackingUrlGroup').style.display = showTracking ? 'block' : 'none';
+            });
+
+            // Sidebar toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (menuToggle && sidebar) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('open');
+                });
+            }
+        }
+
+        async function loadOrderStats() {
+            try {
+                const response = await fetch(`${AUTH_API}/orders-stats`, {
+                    headers: getAuthHeaders()
+                });
+                if (!response.ok) throw new Error('Failed to load stats');
+                const data = await response.json();
+                const stats = data.data;
+
+                document.getElementById('totalOrders').textContent = stats.total || 0;
+                document.getElementById('pendingOrders').textContent = (stats.pending || 0) + (stats.confirmed || 0);
+                document.getElementById('shippedOrders').textContent = stats.shipped || 0;
+                document.getElementById('deliveredOrders').textContent = stats.delivered || 0;
+                
+                // Update badge
+                const badge = document.getElementById('pendingOrdersBadge');
+                if (badge) badge.textContent = stats.pending || 0;
+            } catch (error) {
+                console.error('Error loading order stats:', error);
+            }
+        }
+
+        async function loadOrders() {
+            showLoading(true);
+            try {
+                const search = document.getElementById('orderSearchInput')?.value || '';
+                const status = document.getElementById('statusFilter')?.value || '';
+                const paymentStatus = document.getElementById('paymentFilter')?.value || '';
+
+                const params = new URLSearchParams({
+                    page: currentOrderPage,
+                    limit: 20,
+                    search,
+                    status,
+                    paymentStatus
+                });
+
+                const response = await fetch(`${AUTH_API}/orders?${params}`, {
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
+                    throw new Error('Failed to load orders');
+                }
+
+                const data = await response.json();
+                orders = data.data.orders || [];
+                ordersPagination = data.data.pagination || {};
+                
+                renderOrdersTable();
+                renderPagination();
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                showToast('Failed to load orders', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function renderOrdersTable() {
+            const tbody = document.getElementById('ordersTableBody');
+            if (!tbody) return;
+
+            if (orders.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                                        <line x1="3" y1="6" x2="21" y2="6"/>
+                                    </svg>
+                                </div>
+                                <h3>No orders found</h3>
+                                <p>Orders will appear here once customers place them.</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = orders.map(order => {
+                const itemsPreview = order.items.slice(0, 2).map(item => 
+                    `<span>${item.name}${item.flavour ? ` (${item.flavour})` : ''} x${item.quantity}</span>`
+                ).join('');
+                const moreItems = order.items.length > 2 ? `<span class="order-items-more">+${order.items.length - 2} more</span>` : '';
+
+                return `
+                    <tr data-id="${order._id}">
+                        <td>
+                            <strong>${order.orderNumber}</strong>
+                        </td>
+                        <td>
+                            <div class="customer-cell">
+                                <span class="name">${order.shippingAddress?.fullName || order.customer?.name || 'N/A'}</span>
+                                <span class="mobile">${order.shippingAddress?.mobile || order.customer?.mobile || ''}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="order-items-preview">
+                                ${itemsPreview}
+                                ${moreItems}
+                            </div>
+                        </td>
+                        <td><strong>₹${order.total?.toLocaleString() || 0}</strong></td>
+                        <td>
+                            <div>
+                                <span class="payment-status ${order.payment?.status || 'pending'}">
+                                    ${getPaymentStatusIcon(order.payment?.status)}
+                                    ${order.payment?.status || 'pending'}
+                                </span>
+                                <div class="payment-method">${order.payment?.method || 'N/A'}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="order-status ${order.status}">
+                                ${order.status?.replace('_', ' ')}
+                            </span>
+                        </td>
+                        <td>${formatDate(order.createdAt)}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-secondary btn-icon" onclick="viewOrder('${order._id}')" title="View Details">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                </button>
+                                <button class="btn btn-primary btn-icon" onclick="openStatusModal('${order._id}')" title="Update Status">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function getPaymentStatusIcon(status) {
+            const icons = {
+                paid: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>',
+                pending: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+                failed: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+                refunded: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>'
+            };
+            return icons[status] || icons.pending;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return 'N/A';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            });
+        }
+
+        function formatDateTime(dateStr) {
+            if (!dateStr) return 'N/A';
+            const date = new Date(dateStr);
+            return date.toLocaleString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function renderPagination() {
+            const container = document.getElementById('pagination');
+            if (!container || !ordersPagination.pages) return;
+
+            const { page, pages, total } = ordersPagination;
+            
+            if (pages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <button ${page <= 1 ? 'disabled' : ''} onclick="goToPage(${page - 1})">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"/>
+                    </svg>
+                </button>
+            `;
+
+            // Show page numbers
+            const maxVisible = 5;
+            let start = Math.max(1, page - Math.floor(maxVisible / 2));
+            let end = Math.min(pages, start + maxVisible - 1);
+            
+            if (end - start < maxVisible - 1) {
+                start = Math.max(1, end - maxVisible + 1);
+            }
+
+            if (start > 1) {
+                html += `<button onclick="goToPage(1)">1</button>`;
+                if (start > 2) html += `<span class="pagination-info">...</span>`;
+            }
+
+            for (let i = start; i <= end; i++) {
+                html += `<button class="${i === page ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+
+            if (end < pages) {
+                if (end < pages - 1) html += `<span class="pagination-info">...</span>`;
+                html += `<button onclick="goToPage(${pages})">${pages}</button>`;
+            }
+
+            html += `
+                <button ${page >= pages ? 'disabled' : ''} onclick="goToPage(${page + 1})">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"/>
+                    </svg>
+                </button>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentOrderPage = page;
+            loadOrders();
+        }
+
+        async function viewOrder(orderId) {
+            try {
+                const response = await fetch(`${AUTH_API}/orders/${orderId}`, {
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) throw new Error('Failed to load order');
+
+                const data = await response.json();
+                const order = data.data;
+
+                document.getElementById('orderModalNumber').textContent = order.orderNumber;
+                
+                const modalBody = document.getElementById('orderModalBody');
+                modalBody.innerHTML = `
+                    <div class="order-detail-grid">
+                        <div class="order-detail-section">
+                            <h4>Customer Information</h4>
+                            <div class="detail-row">
+                                <span class="detail-label">Name</span>
+                                <span class="detail-value">${order.shippingAddress?.fullName || 'N/A'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Mobile</span>
+                                <span class="detail-value">${order.shippingAddress?.mobile || 'N/A'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Email</span>
+                                <span class="detail-value">${order.customer?.email || 'N/A'}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="order-detail-section">
+                            <h4>Shipping Address</h4>
+                            <div class="detail-row">
+                                <span class="detail-label">Address</span>
+                                <span class="detail-value">
+                                    ${order.shippingAddress?.houseFloor || ''}<br>
+                                    ${order.shippingAddress?.fullAddress || ''}<br>
+                                    ${order.shippingAddress?.landmark ? order.shippingAddress.landmark + '<br>' : ''}
+                                    ${order.shippingAddress?.city || ''}, ${order.shippingAddress?.state || ''} - ${order.shippingAddress?.pincode || ''}
+                                </span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Address Type</span>
+                                <span class="detail-value" style="text-transform: capitalize;">${order.shippingAddress?.addressType || 'home'}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="order-detail-section">
+                            <h4>Order Summary</h4>
+                            <div class="detail-row">
+                                <span class="detail-label">Subtotal</span>
+                                <span class="detail-value">₹${order.subtotal?.toLocaleString() || 0}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Shipping</span>
+                                <span class="detail-value">₹${order.shippingCost?.toLocaleString() || 0}</span>
+                            </div>
+                            ${order.discount ? `
+                            <div class="detail-row">
+                                <span class="detail-label">Discount</span>
+                                <span class="detail-value" style="color: #22c55e;">-₹${order.discount?.toLocaleString() || 0}</span>
+                            </div>
+                            ` : ''}
+                            <div class="detail-row" style="font-weight: 600;">
+                                <span class="detail-label">Total</span>
+                                <span class="detail-value">₹${order.total?.toLocaleString() || 0}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="order-detail-section">
+                            <h4>Payment Information</h4>
+                            <div class="detail-row">
+                                <span class="detail-label">Method</span>
+                                <span class="detail-value" style="text-transform: uppercase;">${order.payment?.method || 'N/A'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Status</span>
+                                <span class="detail-value">
+                                    <span class="payment-status ${order.payment?.status || 'pending'}">
+                                        ${order.payment?.status || 'pending'}
+                                    </span>
+                                </span>
+                            </div>
+                            ${order.payment?.razorpayPaymentId ? `
+                            <div class="detail-row">
+                                <span class="detail-label">Payment ID</span>
+                                <span class="detail-value" style="font-size: 11px;">${order.payment.razorpayPaymentId}</span>
+                            </div>
+                            ` : ''}
+                            ${order.payment?.method === 'cod' ? `
+                            <div class="detail-row">
+                                <span class="detail-label">COD Collected</span>
+                                <span class="detail-value">${order.payment?.codCollected ? 'Yes' : 'No'}</span>
+                            </div>
+                            ${!order.payment?.codCollected && order.status === 'delivered' ? `
+                            <button class="btn btn-primary btn-sm" onclick="markCODCollected('${order._id}')" style="margin-top: 8px;">
+                                Mark COD Collected
+                            </button>
+                            ` : ''}
+                            ` : ''}
+                        </div>
+                        
+                        <div class="order-detail-section full-width">
+                            <h4>Order Items</h4>
+                            <div class="order-items-list">
+                                ${order.items.map(item => `
+                                    <div class="order-item">
+                                        <div class="order-item-image">
+                                            ${item.image ? `<img src="${item.image}" alt="${item.name}">` : `
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                            </svg>
+                                            `}
+                                        </div>
+                                        <div class="order-item-info">
+                                            <div class="order-item-name">${item.name}</div>
+                                            <div class="order-item-meta">${item.flavour ? `Flavour: ${item.flavour}` : ''}</div>
+                                        </div>
+                                        <div class="order-item-price">
+                                            <div class="qty">x${item.quantity}</div>
+                                            <div class="total">₹${(item.price * item.quantity).toLocaleString()}</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="order-detail-section full-width">
+                            <h4>Status History</h4>
+                            <div class="status-timeline">
+                                ${(order.statusHistory || []).reverse().map(history => `
+                                    <div class="timeline-item">
+                                        <div class="timeline-dot">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="20 6 9 17 4 12"/>
+                                            </svg>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <div class="timeline-status">${history.status?.replace('_', ' ')}</div>
+                                            ${history.note ? `<div class="timeline-note">${history.note}</div>` : ''}
+                                            <div class="timeline-time">${formatDateTime(history.timestamp)} by ${history.updatedBy || 'system'}</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        ${order.trackingNumber || order.notes || order.adminNotes ? `
+                        <div class="order-detail-section full-width">
+                            <h4>Additional Information</h4>
+                            ${order.trackingNumber ? `
+                            <div class="detail-row">
+                                <span class="detail-label">Tracking Number</span>
+                                <span class="detail-value">${order.trackingNumber}</span>
+                            </div>
+                            ` : ''}
+                            ${order.trackingUrl ? `
+                            <div class="detail-row">
+                                <span class="detail-label">Tracking URL</span>
+                                <span class="detail-value"><a href="${order.trackingUrl}" target="_blank" style="color: var(--primary);">Track Package</a></span>
+                            </div>
+                            ` : ''}
+                            ${order.notes ? `
+                            <div class="detail-row">
+                                <span class="detail-label">Customer Notes</span>
+                                <span class="detail-value">${order.notes}</span>
+                            </div>
+                            ` : ''}
+                            ${order.adminNotes ? `
+                            <div class="detail-row">
+                                <span class="detail-label">Admin Notes</span>
+                                <span class="detail-value">${order.adminNotes}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                openModal('orderModal');
+            } catch (error) {
+                console.error('Error loading order:', error);
+                showToast('Failed to load order details', 'error');
+            }
+        }
+
+        function openStatusModal(orderId) {
+            currentOrderId = orderId;
+            const order = orders.find(o => o._id === orderId);
+            if (order) {
+                document.getElementById('newStatus').value = order.status;
+                document.getElementById('trackingNumber').value = order.trackingNumber || '';
+                document.getElementById('trackingUrl').value = order.trackingUrl || '';
+                document.getElementById('statusNote').value = '';
+                
+                // Show/hide tracking fields based on current status
+                const showTracking = ['shipped', 'out_for_delivery'].includes(order.status);
+                document.getElementById('trackingGroup').style.display = showTracking ? 'block' : 'none';
+                document.getElementById('trackingUrlGroup').style.display = showTracking ? 'block' : 'none';
+            }
+            document.getElementById('statusOrderId').value = orderId;
+            openModal('statusModal');
+        }
+
+        async function submitStatusUpdate(e) {
+            e.preventDefault();
+            
+            const orderId = document.getElementById('statusOrderId').value;
+            const status = document.getElementById('newStatus').value;
+            const note = document.getElementById('statusNote').value;
+            const trackingNumber = document.getElementById('trackingNumber').value;
+            const trackingUrl = document.getElementById('trackingUrl').value;
+
+            try {
+                const response = await fetch(`${AUTH_API}/orders/${orderId}/status`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ status, note, trackingNumber, trackingUrl })
+                });
+
+                if (!response.ok) throw new Error('Failed to update status');
+
+                showToast('Order status updated successfully', 'success');
+                closeModal('statusModal');
+                loadOrders();
+                loadOrderStats();
+            } catch (error) {
+                console.error('Error updating status:', error);
+                showToast('Failed to update order status', 'error');
+            }
+        }
+
+        async function markCODCollected(orderId) {
+            try {
+                const response = await fetch(`${AUTH_API}/orders/${orderId}/cod-collected`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) throw new Error('Failed to mark COD collected');
+
+                showToast('COD payment marked as collected', 'success');
+                closeModal('orderModal');
+                loadOrders();
+            } catch (error) {
+                console.error('Error marking COD collected:', error);
+                showToast('Failed to mark COD collected', 'error');
+            }
+        }
+
+        function exportOrders() {
+            // Simple CSV export
+            const headers = ['Order #', 'Customer', 'Mobile', 'Total', 'Payment Method', 'Payment Status', 'Order Status', 'Date'];
+            const rows = orders.map(order => [
+                order.orderNumber,
+                order.shippingAddress?.fullName || '',
+                order.shippingAddress?.mobile || '',
+                order.total,
+                order.payment?.method || '',
+                order.payment?.status || '',
+                order.status,
+                formatDate(order.createdAt)
+            ]);
+
+            const csv = [headers.join(','), ...rows.map(r => r.map(c => `"${c}"`).join(','))].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `orders-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

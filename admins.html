@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Admins — Flow Admin Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">F</div>
+                    <span class="logo-text">Flow</span>
+                    <span class="logo-badge">Admin</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                        </svg>
+                        Dashboard
+                    </a>
+                    <a href="products.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        </svg>
+                        Products
+                    </a>
+                    <a href="orders.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <path d="M16 10a4 4 0 01-8 0"/>
+                        </svg>
+                        Orders
+                    </a>
+                    <a href="customers.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 010 7.75"/>
+                        </svg>
+                        Customers
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Analytics</div>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="20" x2="12" y2="10"/>
+                            <line x1="18" y1="20" x2="18" y2="4"/>
+                            <line x1="6" y1="20" x2="6" y2="16"/>
+                        </svg>
+                        Reports
+                    </a>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"/>
+                            <line x1="12" y1="20" x2="12" y2="4"/>
+                            <line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                        Sales
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Settings</div>
+                    <a href="admins.html" class="nav-item active">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                            <circle cx="8.5" cy="7" r="4"/>
+                            <path d="M20 8v6M23 11h-6"/>
+                        </svg>
+                        Manage Admins
+                    </a>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+                        </svg>
+                        Settings
+                    </a>
+                    <a href="#" class="nav-item" onclick="logout(); return false;">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                        Logout
+                    </a>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">A</div>
+                    <div class="user-details">
+                        <div class="user-name">Admin</div>
+                        <div class="user-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="12" x2="21" y2="12"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <line x1="3" y1="18" x2="21" y2="18"/>
+                        </svg>
+                    </button>
+                    <div>
+                        <h1 class="page-title">Manage Admins</h1>
+                        <div class="breadcrumb">
+                            <a href="products.html">Dashboard</a>
+                            <span>/</span>
+                            <span>Admins</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                            <path d="M13.73 21a2 2 0 01-3.46 0"/>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon blue">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                                    <circle cx="9" cy="7" r="4"/>
+                                    <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                                    <path d="M16 3.13a4 4 0 010 7.75"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalAdmins">0</div>
+                        <div class="stat-label">Total Admins</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon green">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="activeAdmins">0</div>
+                        <div class="stat-label">Active Admins</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon purple">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="superAdmins">0</div>
+                        <div class="stat-label">Super Admins</div>
+                    </div>
+                </div>
+
+                <!-- Admins Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">All Admins</h2>
+                        <div class="card-actions">
+                            <button class="btn btn-primary btn-sm" onclick="openAddAdminModal()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                                Add Admin
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="loading-spinner" id="loadingSpinner" style="display: none;"></div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Admin</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Last Login</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminsTableBody">
+                                    <!-- Admins will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Admin Modal -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Add New Admin</h3>
+                <button class="modal-close" onclick="closeModal('adminModal')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="adminForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" class="form-input" id="adminName" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address *</label>
+                        <input type="email" class="form-input" id="adminEmail" placeholder="admin@example.com" required>
+                    </div>
+                    <div class="form-group" id="passwordGroup">
+                        <label class="form-label">Password *</label>
+                        <input type="password" class="form-input" id="adminPassword" placeholder="••••••••" minlength="6">
+                        <small style="color: var(--text-muted); font-size: 12px;">Minimum 6 characters</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Role *</label>
+                        <select class="form-input" id="adminRole" required>
+                            <option value="admin">Admin</option>
+                            <option value="superadmin">Super Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('adminModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submitAdminBtn">Create Admin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Delete Admin</h3>
+                <button class="modal-close" onclick="closeModal('deleteModal')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <div class="empty-icon" style="background: rgba(239, 68, 68, 0.15); margin-bottom: 16px;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                </div>
+                <p>Are you sure you want to delete <strong id="deleteAdminName"></strong>?</p>
+                <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer" style="justify-content: center;">
+                <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // API Configuration
+        const API_BASE = '/api/admin';
+        
+        // State
+        let admins = [];
+        let currentAdminData = null;
+        let isEditing = false;
+        let deleteAdminId = null;
+        
+        // ========== AUTH ==========
+        function getAuthHeaders() {
+            const token = localStorage.getItem('adminToken');
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            };
+        }
+        
+        function logout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminData');
+            window.location.href = '/admin/login.html';
+        }
+        
+        function getCurrentAdmin() {
+            const adminData = localStorage.getItem('adminData');
+            if (!adminData) return null;
+            try {
+                return JSON.parse(adminData);
+            } catch {
+                return null;
+            }
+        }
+        
+        async function checkAuth() {
+            const token = localStorage.getItem('adminToken');
+            if (!token) {
+                window.location.href = '/admin/login.html';
+                return false;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/me`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (!response.ok) {
+                    logout();
+                    return false;
+                }
+                
+                const data = await response.json();
+                currentAdminData = data.data;
+                
+                // Check if superadmin
+                if (currentAdminData.role !== 'superadmin') {
+                    showToast('Access denied. Super admin privileges required.', 'error');
+                    setTimeout(() => {
+                        window.location.href = '/admin/products.html';
+                    }, 1500);
+                    return false;
+                }
+                
+                updateUserInfo();
+                return true;
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                logout();
+                return false;
+            }
+        }
+        
+        function updateUserInfo() {
+            const admin = getCurrentAdmin();
+            if (!admin) return;
+            
+            const userNameEl = document.querySelector('.user-name');
+            const userRoleEl = document.querySelector('.user-role');
+            const userAvatarEl = document.querySelector('.user-avatar');
+            
+            if (userNameEl) userNameEl.textContent = admin.name || 'Admin';
+            if (userRoleEl) userRoleEl.textContent = admin.role === 'superadmin' ? 'Super Admin' : 'Admin';
+            if (userAvatarEl) userAvatarEl.textContent = (admin.name || 'A').charAt(0).toUpperCase();
+        }
+        
+        // ========== INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', async () => {
+            const isAuthed = await checkAuth();
+            if (!isAuthed) return;
+            
+            await loadAdmins();
+            setupEventListeners();
+        });
+        
+        function setupEventListeners() {
+            // Form submission
+            document.getElementById('adminForm').addEventListener('submit', handleAdminSubmit);
+            
+            // Modal close on overlay click
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        closeAllModals();
+                    }
+                });
+            });
+            
+            // Escape key to close modals
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeAllModals();
+                }
+            });
+        }
+        
+        // ========== LOAD ADMINS ==========
+        async function loadAdmins() {
+            showLoading(true);
+            try {
+                const response = await fetch(`${API_BASE}/users`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (!response.ok) throw new Error('Failed to load admins');
+                
+                const data = await response.json();
+                admins = data.data || [];
+                renderAdminsTable();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading admins:', error);
+                showToast('Failed to load admins', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        function renderAdminsTable() {
+            const tbody = document.getElementById('adminsTableBody');
+            if (!tbody) return;
+            
+            const currentAdmin = getCurrentAdmin();
+            
+            if (admins.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                                        <circle cx="9" cy="7" r="4"/>
+                                    </svg>
+                                </div>
+                                <h3>No admins found</h3>
+                                <p>Add your first admin to get started.</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = admins.map(admin => `
+                <tr data-id="${admin._id}">
+                    <td>
+                        <div class="product-cell">
+                            <div class="product-thumb" style="background: ${admin.role === 'superadmin' ? 'linear-gradient(135deg, var(--primary), var(--secondary))' : 'rgba(255,255,255,0.1)'}">
+                                ${(admin.name || 'A').charAt(0).toUpperCase()}
+                            </div>
+                            <div class="product-info">
+                                <h4>${admin.name}</h4>
+                                ${admin._id === currentAdmin?.id ? '<span style="color: var(--primary); font-size: 11px;">You</span>' : ''}
+                            </div>
+                        </div>
+                    </td>
+                    <td>${admin.email}</td>
+                    <td>
+                        <span class="status-badge ${admin.role === 'superadmin' ? 'featured' : 'active'}" style="${admin.role === 'superadmin' ? 'background: rgba(124, 58, 237, 0.15); color: #a78bfa;' : ''}">
+                            ${admin.role === 'superadmin' ? 'Super Admin' : 'Admin'}
+                        </span>
+                    </td>
+                    <td>${admin.lastLogin ? formatDate(admin.lastLogin) : 'Never'}</td>
+                    <td>
+                        <span class="status-badge ${admin.isActive ? 'active' : 'inactive'}">
+                            <span class="status-dot"></span>
+                            ${admin.isActive ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            ${admin._id !== currentAdmin?.id ? `
+                                <button class="btn btn-secondary btn-icon" onclick="openEditAdminModal('${admin._id}')" title="Edit">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                    </svg>
+                                </button>
+                                <button class="btn ${admin.isActive ? 'btn-warning' : 'btn-success'} btn-icon" onclick="toggleAdminStatus('${admin._id}')" title="${admin.isActive ? 'Deactivate' : 'Activate'}">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        ${admin.isActive 
+                                            ? '<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>'
+                                            : '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>'}
+                                    </svg>
+                                </button>
+                                <button class="btn btn-danger btn-icon" onclick="openDeleteModal('${admin._id}')" title="Delete">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                    </svg>
+                                </button>
+                            ` : '<span style="color: var(--text-muted); font-size: 12px;">—</span>'}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function updateStats() {
+            document.getElementById('totalAdmins').textContent = admins.length;
+            document.getElementById('activeAdmins').textContent = admins.filter(a => a.isActive).length;
+            document.getElementById('superAdmins').textContent = admins.filter(a => a.role === 'superadmin').length;
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            
+            // Less than 24 hours
+            if (diff < 86400000) {
+                const hours = Math.floor(diff / 3600000);
+                if (hours < 1) {
+                    const mins = Math.floor(diff / 60000);
+                    return mins < 1 ? 'Just now' : `${mins}m ago`;
+                }
+                return `${hours}h ago`;
+            }
+            
+            // Less than 7 days
+            if (diff < 604800000) {
+                const days = Math.floor(diff / 86400000);
+                return `${days}d ago`;
+            }
+            
+            return date.toLocaleDateString('en-IN', { 
+                day: 'numeric',
+                month: 'short',
+                year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+            });
+        }
+        
+        // ========== ADD/EDIT ADMIN ==========
+        function openAddAdminModal() {
+            isEditing = false;
+            currentAdminData = null;
+            document.getElementById('modalTitle').textContent = 'Add New Admin';
+            document.getElementById('submitAdminBtn').textContent = 'Create Admin';
+            document.getElementById('adminPassword').required = true;
+            document.getElementById('passwordGroup').querySelector('small').textContent = 'Minimum 6 characters';
+            resetAdminForm();
+            openModal('adminModal');
+        }
+        
+        function openEditAdminModal(adminId) {
+            const admin = admins.find(a => a._id === adminId);
+            if (!admin) {
+                showToast('Admin not found', 'error');
+                return;
+            }
+            
+            isEditing = true;
+            currentAdminData = admin;
+            document.getElementById('modalTitle').textContent = 'Edit Admin';
+            document.getElementById('submitAdminBtn').textContent = 'Update Admin';
+            document.getElementById('adminPassword').required = false;
+            document.getElementById('passwordGroup').querySelector('small').textContent = 'Leave blank to keep current password';
+            
+            // Populate form
+            document.getElementById('adminName').value = admin.name || '';
+            document.getElementById('adminEmail').value = admin.email || '';
+            document.getElementById('adminEmail').disabled = true; // Don't allow email change
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminRole').value = admin.role || 'admin';
+            
+            openModal('adminModal');
+        }
+        
+        function resetAdminForm() {
+            document.getElementById('adminForm').reset();
+            document.getElementById('adminEmail').disabled = false;
+        }
+        
+        async function handleAdminSubmit(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('adminName').value.trim();
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            const role = document.getElementById('adminRole').value;
+            
+            if (!name || !email) {
+                showToast('Name and email are required', 'error');
+                return;
+            }
+            
+            if (!isEditing && !password) {
+                showToast('Password is required for new admin', 'error');
+                return;
+            }
+            
+            if (password && password.length < 6) {
+                showToast('Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitAdminBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = isEditing ? 'Updating...' : 'Creating...';
+            
+            try {
+                let response;
+                const payload = { name, role };
+                if (password) payload.password = password;
+                
+                if (isEditing) {
+                    response = await fetch(`${API_BASE}/users/${currentAdminData._id}`, {
+                        method: 'PUT',
+                        headers: getAuthHeaders(),
+                        body: JSON.stringify(payload)
+                    });
+                } else {
+                    payload.email = email;
+                    response = await fetch(`${API_BASE}/users`, {
+                        method: 'POST',
+                        headers: getAuthHeaders(),
+                        body: JSON.stringify(payload)
+                    });
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast(isEditing ? 'Admin updated successfully' : 'Admin created successfully', 'success');
+                    closeModal('adminModal');
+                    await loadAdmins();
+                } else {
+                    showToast(data.error || 'Operation failed', 'error');
+                }
+            } catch (error) {
+                console.error('Admin operation error:', error);
+                showToast('An error occurred', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = isEditing ? 'Update Admin' : 'Create Admin';
+            }
+        }
+        
+        // ========== TOGGLE STATUS ==========
+        async function toggleAdminStatus(adminId) {
+            try {
+                const response = await fetch(`${API_BASE}/users/${adminId}/toggle`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders()
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    await loadAdmins();
+                } else {
+                    showToast(data.error || 'Failed to toggle status', 'error');
+                }
+            } catch (error) {
+                console.error('Toggle error:', error);
+                showToast('An error occurred', 'error');
+            }
+        }
+        
+        // ========== DELETE ADMIN ==========
+        function openDeleteModal(adminId) {
+            const admin = admins.find(a => a._id === adminId);
+            if (!admin) return;
+            
+            deleteAdminId = adminId;
+            document.getElementById('deleteAdminName').textContent = admin.name;
+            openModal('deleteModal');
+        }
+        
+        async function confirmDelete() {
+            if (!deleteAdminId) return;
+            
+            const deleteBtn = document.getElementById('confirmDeleteBtn');
+            deleteBtn.disabled = true;
+            deleteBtn.textContent = 'Deleting...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/users/${deleteAdminId}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Admin deleted successfully', 'success');
+                    closeModal('deleteModal');
+                    await loadAdmins();
+                } else {
+                    showToast(data.error || 'Failed to delete admin', 'error');
+                }
+            } catch (error) {
+                console.error('Delete error:', error);
+                showToast('An error occurred', 'error');
+            } finally {
+                deleteBtn.disabled = false;
+                deleteBtn.textContent = 'Delete';
+                deleteAdminId = null;
+            }
+        }
+        
+        // ========== MODAL HELPERS ==========
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+        
+        function closeAllModals() {
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.classList.remove('active');
+            });
+            document.body.style.overflow = '';
+        }
+        
+        // ========== TOAST ==========
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <svg class="toast-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    ${type === 'success' 
+                        ? '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>'
+                        : '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>'}
+                </svg>
+                <span class="toast-message">${message}</span>
+            `;
+            
+            const container = document.getElementById('toastContainer');
+            if (container) {
+                container.appendChild(toast);
+                requestAnimationFrame(() => toast.classList.add('show'));
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+        }
+        
+        // ========== LOADING ==========
+        function showLoading(show) {
+            const spinner = document.getElementById('loadingSpinner');
+            if (spinner) {
+                spinner.style.display = show ? 'block' : 'none';
+            }
+        }
+    </script>
+    
+    <style>
+        .btn-warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .btn-warning:hover {
+            background: rgba(245, 158, 11, 0.25);
+        }
+        .btn-success {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .btn-success:hover {
+            background: rgba(16, 185, 129, 0.25);
+        }
+        .product-thumb {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+    </style>
+</body>
+</html>

@@ -370,7 +370,7 @@
                 });
                 
                 if (response.ok) {
-                    window.location.href = '/admin/products.html';
+                    window.location.href = '/products.html';
                 } else {
                     localStorage.removeItem('adminToken');
                     localStorage.removeItem('adminData');
@@ -435,7 +435,7 @@
                     localStorage.setItem('adminData', JSON.stringify(data.data.admin));
                     
                     // Redirect to dashboard
-                    window.location.href = '/admin/products.html';
+                    window.location.href = '/products.html';
                 } else {
                     errorText.textContent = data.error || 'Invalid credentials';
                     errorMessage.classList.add('show');

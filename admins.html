@@ -322,7 +322,7 @@
         function logout() {
             localStorage.removeItem('adminToken');
             localStorage.removeItem('adminData');
-            window.location.href = '/admin/login.html';
+            window.location.href = '/login.html';
         }
         
         function getCurrentAdmin() {
@@ -338,7 +338,7 @@
         async function checkAuth() {
             const token = localStorage.getItem('adminToken');
             if (!token) {
-                window.location.href = '/admin/login.html';
+                window.location.href = '/login.html';
                 return false;
             }
             
@@ -359,7 +359,7 @@
                 if (currentAdminData.role !== 'superadmin') {
                     showToast('Access denied. Super admin privileges required.', 'error');
                     setTimeout(() => {
-                        window.location.href = '/admin/products.html';
+                        window.location.href = '/products.html';
                     }, 1500);
                     return false;
                 }

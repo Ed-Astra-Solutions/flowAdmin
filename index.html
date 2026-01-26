@@ -8,9 +8,9 @@
         // Check if logged in, redirect accordingly
         const token = localStorage.getItem('adminToken');
         if (!token) {
-            window.location.href = '/admin/login.html';
+            window.location.href = '/login.html';
         } else {
-            window.location.href = '/admin/products.html';
+            window.location.href = '/products.html';
         }
     </script>
 </head>

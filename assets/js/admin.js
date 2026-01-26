@@ -54,12 +54,12 @@ function getCurrentAdmin() {
 function logout() {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminData');
-    window.location.href = '/admin/login.html';
+    window.location.href = '/login.html';
 }
 
 async function checkAuth() {
     if (!isAuthenticated()) {
-        window.location.href = '/admin/login.html';
+        window.location.href = '/login.html';
         return false;
     }
     

@@ -6,13 +6,20 @@
     <title>Flow Admin Console</title>
     <script>
         // GitHub Pages SPA redirect
-        // Redirects 404 requests to index.html while preserving the path
+        // Redirects 404 requests to correct pages
         const path = window.location.pathname;
+        
+        // Handle /admin/ prefix (legacy paths)
+        let targetPath = path;
+        if (path.startsWith('/admin/')) {
+            targetPath = path.replace('/admin/', '/');
+        }
+        
         const validPages = ['/', '/index.html', '/login.html', '/products.html', '/orders.html', '/customers.html', '/admins.html'];
         
         // If the path matches a valid page, redirect directly
-        if (validPages.includes(path)) {
-            window.location.replace(path);
+        if (validPages.includes(targetPath)) {
+            window.location.replace(targetPath);
         } else {
             // Otherwise redirect to index
             window.location.replace('/');

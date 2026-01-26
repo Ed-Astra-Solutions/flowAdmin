@@ -3,10 +3,13 @@
  */
 
 // API Configuration
-const API_BASE = '/api';
+// Production: https://api.flowhydration.in/api
+// Local: /api (relative path for same-origin)
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE = isLocal ? '/api' : 'https://api.flowhydration.in/api';
 
 // Auth Configuration
-const AUTH_API = '/api/admin';
+const AUTH_API = isLocal ? '/api/admin' : 'https://api.flowhydration.in/api/admin';
 
 // State
 let products = [];

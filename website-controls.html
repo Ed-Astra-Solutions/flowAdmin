@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Controls - Flow Admin Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <style>
+        /* Website Controls Specific Styles */
+        .controls-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            min-height: calc(100vh - var(--header-height) - 48px);
+        }
+
+        /* Horizontal Tabs */
+        .controls-tabs {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 8px;
+        }
+
+        .controls-tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+
+        .controls-tab:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .controls-tab.active {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(124, 58, 237, 0.15));
+            color: var(--primary);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .controls-tab svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .controls-tab .badge {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .controls-content {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 28px;
+            flex: 1;
+        }
+
+        /* Tab Content Show/Hide */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Coming Soon Placeholder */
+        .coming-soon-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 40px;
+            text-align: center;
+        }
+
+        .coming-soon-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(124, 58, 237, 0.1));
+            border-radius: 24px;
+            margin-bottom: 24px;
+        }
+
+        .coming-soon-icon svg {
+            width: 40px;
+            height: 40px;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+
+        .coming-soon-placeholder h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .coming-soon-placeholder p {
+            font-size: 14px;
+            color: var(--text-muted);
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        .coming-soon-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 152, 0, 0.1));
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 20px;
+            color: #ffc107;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 20px;
+        }
+
+        .coming-soon-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .controls-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--text-primary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .controls-header p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* Section Styles */
+        .control-section {
+            margin-bottom: 32px;
+        }
+
+        .control-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+        }
+
+        .control-section-title svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary);
+        }
+
+        .control-group {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 0;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            padding: 18px 24px;
+            transition: background 0.2s ease;
+        }
+
+        .control-row:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .control-row + .control-row {
+            border-top: 1px solid var(--card-border);
+        }
+
+        .control-info {
+            flex: 1;
+        }
+
+        .control-info h4 {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+            color: var(--text-primary);
+        }
+
+        .control-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .control-action {
+            flex-shrink: 0;
+        }
+
+        /* Section Visibility Grid */
+        .visibility-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .visibility-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            transition: all 0.25s ease;
+        }
+
+        .visibility-card:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.06), rgba(124, 58, 237, 0.04));
+            border-color: rgba(0, 212, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .visibility-card-icon {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.12), rgba(124, 58, 237, 0.08));
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .visibility-card-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary);
+        }
+
+        .visibility-card-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .visibility-card-content h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .visibility-card-content p {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 600px) {
+            .visibility-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Modern Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+            vertical-align: middle;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 26px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            top: 2px;
+            background: linear-gradient(135deg, #fff, #e8e8e8);
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: linear-gradient(135deg, var(--primary), #00b4b4);
+            border-color: transparent;
+            box-shadow: 0 0 16px rgba(0, 212, 255, 0.4);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+            background: linear-gradient(135deg, #fff, #f0f0f0);
+        }
+
+        .toggle-switch:hover .toggle-slider {
+            border-color: rgba(0, 212, 255, 0.4);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:hover {
+            background: linear-gradient(135deg, var(--primary), #00b4b4);
+        }
+
+        /* Image Upload Zone */
+        .image-upload-zone {
+            border: 2px dashed var(--card-border);
+            border-radius: 10px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .image-upload-zone:hover {
+            border-color: var(--primary);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .image-upload-zone.has-image {
+            padding: 0;
+            border: none;
+        }
+
+        .image-upload-zone img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        .image-upload-zone svg {
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .image-upload-zone p {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .image-upload-zone .upload-link {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Banner Preview */
+        .banner-preview {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(124, 58, 237, 0.1));
+            aspect-ratio: 16/5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .banner-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .banner-preview-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .banner-preview:hover .banner-preview-overlay {
+            opacity: 1;
+        }
+
+        .banner-placeholder {
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .banner-placeholder svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        /* Hero Section Layout */
+        .hero-section-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 32px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.03), rgba(124, 58, 237, 0.03));
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .hero-media-panel,
+        .hero-content-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .panel-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        /* Media Type Toggle - Compact */
+        .media-type-toggle {
+            display: flex;
+            gap: 2px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 3px;
+            border-radius: 8px;
+        }
+
+        .media-type-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .media-type-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .media-type-btn.active {
+            background: linear-gradient(135deg, var(--primary), #00b4b4);
+            color: #000;
+            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
+        }
+
+        .media-type-btn.active svg {
+            stroke: #000;
+        }
+
+        /* Hero Media Preview */
+        .hero-media-preview {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+            aspect-ratio: 9/16;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .hero-media-preview:hover {
+            border-color: var(--primary);
+            background: linear-gradient(180deg, rgba(0, 212, 255, 0.05), rgba(0, 0, 0, 0.4));
+        }
+
+        .hero-media-preview.has-media {
+            border: none;
+        }
+
+        .hero-media-preview img,
+        .hero-media-preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .media-preview-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .hero-media-preview:hover .media-preview-overlay {
+            opacity: 1;
+        }
+
+        .media-placeholder {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 20px;
+        }
+
+        .media-placeholder svg {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        .media-placeholder p {
+            font-weight: 500;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .media-placeholder span {
+            font-size: 11px;
+            opacity: 0.6;
+        }
+
+        /* Hero Upload Progress */
+        .hero-upload-progress {
+            margin-top: -8px;
+        }
+
+        .hero-upload-progress .progress-bar {
+            height: 4px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .hero-upload-progress .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #00b4b4);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .hero-upload-progress .progress-text {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            text-align: center;
+        }
+
+        .media-info-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        /* Hero Content Panel */
+        .hero-content-panel {
+            justify-content: flex-start;
+        }
+
+        .hero-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .hero-form-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .hero-form-label svg {
+            color: var(--primary);
+            opacity: 0.7;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.5;
+        }
+
+        .hero-visibility-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-top: auto;
+        }
+
+        .visibility-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .visibility-info svg {
+            color: var(--primary);
+        }
+
+        /* Form Inputs */
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+            background: rgba(0, 0, 0, 0.35);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        /* Responsive Hero Section */
+        @media (max-width: 768px) {
+            .hero-section-layout {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .hero-media-panel {
+                max-width: 280px;
+                margin: 0 auto;
+            }
+        }
+
+        /* Hero Content Settings - Remove old styles */
+        .hero-content-settings {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .controls-tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .controls-tab {
+                white-space: nowrap;
+                padding: 8px 16px;
+            }
+
+            .control-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .control-action {
+                width: 100%;
+            }
+
+            .control-action .form-input {
+                max-width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">F</div>
+                    <span class="logo-text">Flow</span>
+                    <span class="logo-badge">Admin</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="index.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                        </svg>
+                        Dashboard
+                    </a>
+                    <a href="products.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        </svg>
+                        Products
+                    </a>
+                    <a href="orders.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <path d="M16 10a4 4 0 01-8 0"/>
+                        </svg>
+                        Orders
+                    </a>
+                    <a href="customers.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 010 7.75"/>
+                        </svg>
+                        Customers
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Marketing</div>
+                    <a href="discount-codes.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                        </svg>
+                        Discount Codes
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Content</div>
+                    <a href="website-controls.html" class="nav-item active">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="3" y1="9" x2="21" y2="9"/>
+                            <line x1="9" y1="21" x2="9" y2="9"/>
+                        </svg>
+                        Website Controls
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Settings</div>
+                    <a href="admins.html" class="nav-item" id="adminsNavItem" style="display: none;">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                            <circle cx="8.5" cy="7" r="4"/>
+                            <path d="M20 8v6M23 11h-6"/>
+                        </svg>
+                        Manage Admins
+                    </a>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+                        </svg>
+                        Settings
+                    </a>
+                    <a href="#" class="nav-item" onclick="logout(); return false;">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                        Logout
+                    </a>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">A</div>
+                    <div class="user-details">
+                        <div class="user-name">Admin</div>
+                        <div class="user-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="12" x2="21" y2="12"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <line x1="3" y1="18" x2="21" y2="18"/>
+                        </svg>
+                    </button>
+                    <div>
+                        <h1 class="page-title">Website Controls</h1>
+                        <div class="breadcrumb">
+                            <a href="index.html">Dashboard</a>
+                            <span>/</span>
+                            <span>Website Controls</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-primary btn-sm" id="saveChangesBtn" onclick="saveChanges()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                            <polyline points="17 21 17 13 7 13 7 21"/>
+                            <polyline points="7 3 7 8 15 8"/>
+                        </svg>
+                        Save Changes
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <div class="controls-layout">
+                    <!-- Horizontal Tabs -->
+                    <div class="controls-tabs">
+                        <button class="controls-tab active" data-tab="home">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                <polyline points="9 22 9 12 15 12 15 22"/>
+                            </svg>
+                            Home
+                        </button>
+                        <button class="controls-tab" data-tab="shop">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="9" cy="21" r="1"/>
+                                <circle cx="20" cy="21" r="1"/>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                            </svg>
+                            Shop
+                            <span class="badge">Soon</span>
+                        </button>
+                        <button class="controls-tab" data-tab="product">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                            </svg>
+                            Product Page
+                            <span class="badge">Soon</span>
+                        </button>
+                        <button class="controls-tab" data-tab="footer">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="3" y1="15" x2="21" y2="15"/>
+                            </svg>
+                            Footer
+                            <span class="badge">Soon</span>
+                        </button>
+                    </div>
+
+                    <!-- Controls Content -->
+                    <div class="controls-content">
+                        <!-- Home Tab Content -->
+                        <div class="tab-content active" id="home-content">
+                            <div class="controls-header">
+                                <div>
+                                    <h2>Home Page Settings</h2>
+                                    <p>Customize your homepage content, banners, and sections</p>
+                                </div>
+                            </div>
+
+                            <!-- Hero Banner Section -->
+                            <div class="control-section">
+                                <h3 class="control-section-title">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                                        <polyline points="21 15 16 10 5 21"/>
+                                    </svg>
+                                    Hero Media
+                                </h3>
+                                
+                                <div class="hero-section-layout">
+                                    <!-- Left: Media Preview -->
+                                    <div class="hero-media-panel">
+                                        <div class="panel-header">
+                                            <span class="panel-label">Preview</span>
+                                            <div class="media-type-toggle">
+                                                <button type="button" class="media-type-btn active" data-type="video" onclick="setHeroMediaType('video')">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <polygon points="5 3 19 12 5 21 5 3"/>
+                                                    </svg>
+                                                    Video
+                                                </button>
+                                                <button type="button" class="media-type-btn" data-type="image" onclick="setHeroMediaType('image')">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                                                        <polyline points="21 15 16 10 5 21"/>
+                                                    </svg>
+                                                    Image
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="hero-media-preview" id="heroMediaPreview">
+                                            <div class="media-placeholder">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                    <polygon points="5 3 19 12 5 21 5 3"/>
+                                                </svg>
+                                                <p>No media uploaded</p>
+                                                <span>Click to upload</span>
+                                            </div>
+                                            <div class="media-preview-overlay">
+                                                <button class="btn btn-secondary btn-sm" onclick="uploadHeroMedia()">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                                        <polyline points="17 8 12 3 7 8"/>
+                                                        <line x1="12" y1="3" x2="12" y2="15"/>
+                                                    </svg>
+                                                    Upload
+                                                </button>
+                                                <button class="btn btn-danger btn-sm" onclick="removeHeroMedia()">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <polyline points="3 6 5 6 21 6"/>
+                                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                                    </svg>
+                                                    Remove
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <input type="file" id="heroMediaInput" accept="video/mp4,video/webm,video/quicktime,image/jpeg,image/png,image/webp,image/gif" style="display: none;">
+                                        
+                                        <!-- Upload Progress -->
+                                        <div class="hero-upload-progress" id="heroUploadProgress" style="display: none;">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" id="heroProgressFill"></div>
+                                            </div>
+                                            <span class="progress-text" id="heroProgressText">Uploading...</span>
+                                        </div>
+                                        
+                                        <div class="media-info-note">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+                                            </svg>
+                                            <span>MP4 video (max 50MB) or image (max 5MB)</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Right: Content Settings -->
+                                    <div class="hero-content-panel">
+                                        <div class="panel-header">
+                                            <span class="panel-label">Content</span>
+                                        </div>
+                                        
+                                        <div class="hero-form-group">
+                                            <label class="hero-form-label">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/>
+                                                </svg>
+                                                Title
+                                            </label>
+                                            <input type="text" class="form-input" id="heroTitle" placeholder="Find Your Flow">
+                                        </div>
+                                        
+                                        <div class="hero-form-group">
+                                            <label class="hero-form-label">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/>
+                                                </svg>
+                                                Subtitle
+                                            </label>
+                                            <textarea class="form-input form-textarea" id="heroSubtitle" placeholder="Clean hydration engineered for optimal performance" rows="3"></textarea>
+                                        </div>
+                                        
+                                        <div class="hero-form-group">
+                                            <label class="hero-form-label">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M9 12h6"/><path d="M12 9v6"/>
+                                                </svg>
+                                                CTA Button
+                                            </label>
+                                            <input type="text" class="form-input" id="heroCta" placeholder="Buy Now">
+                                        </div>
+                                        
+                                        <div class="hero-visibility-toggle">
+                                            <div class="visibility-info">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                                    <circle cx="12" cy="12" r="3"/>
+                                                </svg>
+                                                <span>Show Hero Section</span>
+                                            </div>
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="showHero" checked>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section Visibility -->
+                            <div class="control-section">
+                                <h3 class="control-section-title">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                    Section Visibility
+                                </h3>
+                                <div class="visibility-grid">
+                                    <div class="visibility-card">
+                                        <div class="visibility-card-icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <line x1="12" y1="20" x2="12" y2="10"/>
+                                                <line x1="18" y1="20" x2="18" y2="4"/>
+                                                <line x1="6" y1="20" x2="6" y2="16"/>
+                                            </svg>
+                                        </div>
+                                        <div class="visibility-card-content">
+                                            <h4>Stats Bar</h4>
+                                            <p>Key metrics display</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="showStats" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="visibility-card">
+                                        <div class="visibility-card-icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/>
+                                                <path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                                                <path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/>
+                                                <path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/>
+                                                <path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/>
+                                                <path d="M15.5 19H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
+                                                <path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/>
+                                                <path d="M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="visibility-card-content">
+                                            <h4>Ingredients</h4>
+                                            <p>Ingredients breakdown</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="showIngredients" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="visibility-card">
+                                        <div class="visibility-card-icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                            </svg>
+                                        </div>
+                                        <div class="visibility-card-content">
+                                            <h4>Reviews</h4>
+                                            <p>Customer reviews slider</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="showReviews" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="visibility-card">
+                                        <div class="visibility-card-icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                                <polyline points="22 4 12 14.01 9 11.01"/>
+                                            </svg>
+                                        </div>
+                                        <div class="visibility-card-content">
+                                            <h4>Benefits</h4>
+                                            <p>Product benefits section</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="showBenefits" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="visibility-card">
+                                        <div class="visibility-card-icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="10"/>
+                                                <polyline points="12 6 12 12 16 14"/>
+                                            </svg>
+                                        </div>
+                                        <div class="visibility-card-content">
+                                            <h4>How It Works</h4>
+                                            <p>3-step process guide</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="showHowItWorks" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="visibility-card">
+                                        <div class="visibility-card-icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="10"/>
+                                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                                            </svg>
+                                        </div>
+                                        <div class="visibility-card-content">
+                                            <h4>FAQ</h4>
+                                            <p>Frequently asked questions</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="showFaq" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Announcement Bar -->
+                            <div class="control-section">
+                                <h3 class="control-section-title">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                                    </svg>
+                                    Announcement Bar
+                                </h3>
+                                <div class="control-group">
+                                    <div class="control-row">
+                                        <div class="control-info">
+                                            <h4>Enable Announcement Bar</h4>
+                                            <p>Show a sticky banner at the top of the page</p>
+                                        </div>
+                                        <div class="control-action">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="showAnnouncement">
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="control-row">
+                                        <div class="control-info">
+                                            <h4>Announcement Text</h4>
+                                            <p>Message to display in the announcement bar</p>
+                                        </div>
+                                        <div class="control-action" style="flex: 1; max-width: 400px;">
+                                            <input type="text" class="form-input" id="announcementText" placeholder="e.g., Free shipping on orders over ₹999!">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shop Tab Content (Placeholder) -->
+                        <div class="tab-content" id="shop-content">
+                            <div class="coming-soon-placeholder">
+                                <div class="coming-soon-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="9" cy="21" r="1"/>
+                                        <circle cx="20" cy="21" r="1"/>
+                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                                    </svg>
+                                </div>
+                                <h3>Shop Page Settings</h3>
+                                <p>Customize your shop page layout, filters, product grid, and sorting options.</p>
+                                <div class="coming-soon-badge">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <polyline points="12 6 12 12 16 14"/>
+                                    </svg>
+                                    Coming Soon
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Tab Content (Placeholder) -->
+                        <div class="tab-content" id="product-content">
+                            <div class="coming-soon-placeholder">
+                                <div class="coming-soon-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                    </svg>
+                                </div>
+                                <h3>Product Page Settings</h3>
+                                <p>Configure product detail page elements, image gallery, reviews display, and related products.</p>
+                                <div class="coming-soon-badge">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <polyline points="12 6 12 12 16 14"/>
+                                    </svg>
+                                    Coming Soon
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Tab Content (Placeholder) -->
+                        <div class="tab-content" id="footer-content">
+                            <div class="coming-soon-placeholder">
+                                <div class="coming-soon-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                        <line x1="3" y1="15" x2="21" y2="15"/>
+                                    </svg>
+                                </div>
+                                <h3>Footer Settings</h3>
+                                <p>Manage footer links, social media icons, copyright text, and newsletter integration.</p>
+                                <div class="coming-soon-badge">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <polyline points="12 6 12 12 16 14"/>
+                                    </svg>
+                                    Coming Soon
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="assets/js/admin.js"></script>
+    <script>
+        // API Base URL
+        const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const API_BASE_URL = isLocalDev ? '/api' : 'https://api.flowhydration.in/api';
+        
+        // Get auth token
+        function getAuthToken() {
+            return localStorage.getItem('adminToken');
+        }
+        
+        // Current hero media state
+        let heroMediaType = 'video'; // default to video
+        let currentHeroMediaUrl = null;
+        let currentHeroMediaKey = null;
+
+        // Tab Navigation
+        document.querySelectorAll('.controls-tab').forEach(item => {
+            item.addEventListener('click', function() {
+                const tabId = this.dataset.tab;
+                
+                // Update active tab
+                document.querySelectorAll('.controls-tab').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update active content
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(`${tabId}-content`)?.classList.add('active');
+            });
+        });
+
+        // Hero Media Type Toggle
+        function setHeroMediaType(type) {
+            heroMediaType = type;
+            document.querySelectorAll('.media-type-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.type === type);
+            });
+            
+            // Update placeholder icon
+            const placeholder = document.querySelector('.media-placeholder svg');
+            if (placeholder && !currentHeroMediaUrl) {
+                if (type === 'video') {
+                    placeholder.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
+                } else {
+                    placeholder.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>';
+                }
+            }
+        }
+
+        // Hero Media Upload
+        const heroMediaInput = document.getElementById('heroMediaInput');
+        const heroMediaPreview = document.getElementById('heroMediaPreview');
+
+        function uploadHeroMedia() {
+            // Update accept based on selected type
+            if (heroMediaType === 'video') {
+                heroMediaInput.accept = 'video/mp4,video/webm,video/quicktime';
+            } else {
+                heroMediaInput.accept = 'image/jpeg,image/png,image/webp,image/gif';
+            }
+            heroMediaInput.click();
+        }
+
+        heroMediaInput.addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const isVideo = file.type.startsWith('video/');
+            const isImage = file.type.startsWith('image/');
+            
+            // Validate file type matches selected media type
+            if (heroMediaType === 'video' && !isVideo) {
+                showToast('Please select a video file', 'error');
+                return;
+            }
+            if (heroMediaType === 'image' && !isImage) {
+                showToast('Please select an image file', 'error');
+                return;
+            }
+            
+            // Validate file size (before compression)
+            const maxSize = isVideo ? 100 * 1024 * 1024 : 10 * 1024 * 1024; // 100MB for video, 10MB for image (before compression)
+            if (file.size > maxSize) {
+                showToast(`File too large. Max ${isVideo ? '100MB' : '10MB'} allowed.`, 'error');
+                return;
+            }
+            
+            // Show progress
+            const progressContainer = document.getElementById('heroUploadProgress');
+            const progressFill = document.getElementById('heroProgressFill');
+            const progressText = document.getElementById('heroProgressText');
+            progressContainer.style.display = 'block';
+            progressFill.style.width = '0%';
+            
+            try {
+                let fileToUpload = file;
+                
+                // Compress media if needed
+                if (isImage) {
+                    progressText.textContent = 'Compressing image...';
+                    fileToUpload = await compressImage(file);
+                    console.log(`Image compressed: ${(file.size / 1024).toFixed(1)}KB → ${(fileToUpload.size / 1024).toFixed(1)}KB`);
+                } else if (isVideo) {
+                    // For videos, we'll compress on the server side or accept as-is
+                    // Client-side video compression is complex and slow
+                    progressText.textContent = 'Preparing video...';
+                }
+                
+                progressText.textContent = 'Uploading...';
+                
+                const formData = new FormData();
+                formData.append('media', fileToUpload);
+                formData.append('mediaType', heroMediaType);
+                
+                // Upload to S3 via backend
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', `${API_BASE_URL}/website-settings/hero-media`, true);
+                xhr.setRequestHeader('Authorization', `Bearer ${getAuthToken()}`);
+                xhr.withCredentials = true;
+                
+                xhr.upload.onprogress = function(e) {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        progressFill.style.width = percent + '%';
+                        progressText.textContent = `Uploading... ${percent}%`;
+                    }
+                };
+                
+                xhr.onload = function() {
+                    progressContainer.style.display = 'none';
+                    
+                    if (xhr.status === 200 || xhr.status === 201) {
+                        const response = JSON.parse(xhr.responseText);
+                        currentHeroMediaUrl = response.mediaUrl;
+                        currentHeroMediaKey = response.mediaKey;
+                        
+                        updateHeroMediaPreview(currentHeroMediaUrl, heroMediaType);
+                        showToast('Hero media uploaded successfully!', 'success');
+                    } else {
+                        const error = JSON.parse(xhr.responseText);
+                        showToast(error.message || 'Upload failed', 'error');
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    progressContainer.style.display = 'none';
+                    showToast('Upload failed. Please try again.', 'error');
+                };
+                
+                xhr.send(formData);
+                
+            } catch (error) {
+                progressContainer.style.display = 'none';
+                showToast('Upload failed: ' + error.message, 'error');
+            }
+        });
+
+        /**
+         * Compress image while maintaining quality
+         * @param {File} file - Original image file
+         * @returns {Promise<File>} - Compressed image file
+         */
+        async function compressImage(file) {
+            // Compression settings
+            const COMPRESSION_THRESHOLD = 500 * 1024; // 500KB - only compress if larger
+            const MAX_WIDTH = 1920; // Max width for hero images
+            const MAX_HEIGHT = 1920; // Max height
+            const QUALITY_STEPS = [0.92, 0.88, 0.85, 0.80]; // Quality levels to try
+            const TARGET_SIZE = 800 * 1024; // Target size: 800KB
+            
+            // Skip compression for small files
+            if (file.size <= COMPRESSION_THRESHOLD) {
+                return file;
+            }
+            
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                img.onload = async () => {
+                    // Calculate new dimensions (maintain aspect ratio)
+                    let { width, height } = img;
+                    
+                    if (width > MAX_WIDTH) {
+                        height = (height * MAX_WIDTH) / width;
+                        width = MAX_WIDTH;
+                    }
+                    if (height > MAX_HEIGHT) {
+                        width = (width * MAX_HEIGHT) / height;
+                        height = MAX_HEIGHT;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    // Draw image with high quality
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Determine output format
+                    const isJpeg = file.type === 'image/jpeg' || file.type === 'image/jpg';
+                    const outputType = isJpeg ? 'image/jpeg' : 'image/webp';
+                    
+                    // Try different quality levels to reach target size
+                    let compressedBlob = null;
+                    
+                    for (const quality of QUALITY_STEPS) {
+                        compressedBlob = await new Promise(res => {
+                            canvas.toBlob(res, outputType, quality);
+                        });
+                        
+                        // If we're under target size or this is the last quality level, use it
+                        if (compressedBlob.size <= TARGET_SIZE || quality === QUALITY_STEPS[QUALITY_STEPS.length - 1]) {
+                            break;
+                        }
+                    }
+                    
+                    // If compressed is larger than original, use original
+                    if (compressedBlob.size >= file.size) {
+                        resolve(file);
+                        return;
+                    }
+                    
+                    // Create new file with original name
+                    const extension = outputType === 'image/webp' ? '.webp' : '.jpg';
+                    const newName = file.name.replace(/\.[^.]+$/, extension);
+                    const compressedFile = new File([compressedBlob], newName, {
+                        type: outputType,
+                        lastModified: Date.now()
+                    });
+                    
+                    resolve(compressedFile);
+                };
+                
+                img.onerror = () => {
+                    // If compression fails, return original
+                    resolve(file);
+                };
+                
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        function updateHeroMediaPreview(url, type) {
+            heroMediaPreview.classList.add('has-media');
+            
+            if (type === 'video') {
+                heroMediaPreview.innerHTML = `
+                    <video src="${url}" autoplay loop muted playsinline></video>
+                    <div class="media-preview-overlay">
+                        <button class="btn btn-secondary btn-sm" onclick="uploadHeroMedia()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            Change
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="removeHeroMedia()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"/>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                            Remove
+                        </button>
+                    </div>
+                `;
+            } else {
+                heroMediaPreview.innerHTML = `
+                    <img src="${url}" alt="Hero Media">
+                    <div class="media-preview-overlay">
+                        <button class="btn btn-secondary btn-sm" onclick="uploadHeroMedia()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            Change
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="removeHeroMedia()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"/>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                            Remove
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        async function removeHeroMedia() {
+            if (currentHeroMediaKey) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/website-settings/hero-media`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${getAuthToken()}`
+                        },
+                        credentials: 'include'
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to delete media');
+                    }
+                } catch (error) {
+                    console.error('Error deleting media:', error);
+                }
+            }
+            
+            currentHeroMediaUrl = null;
+            currentHeroMediaKey = null;
+            heroMediaPreview.classList.remove('has-media');
+            
+            const iconSvg = heroMediaType === 'video' 
+                ? '<polygon points="5 3 19 12 5 21 5 3"/>'
+                : '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>';
+            
+            heroMediaPreview.innerHTML = `
+                <div class="media-placeholder">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        ${iconSvg}
+                    </svg>
+                    <p>No media uploaded</p>
+                    <span>Upload a video or image for the hero section</span>
+                </div>
+                <div class="media-preview-overlay">
+                    <button class="btn btn-secondary btn-sm" onclick="uploadHeroMedia()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        Upload
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="removeHeroMedia()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                        Remove
+                    </button>
+                </div>
+            `;
+            heroMediaInput.value = '';
+            showToast('Hero media removed', 'success');
+        }
+
+        // Load website settings on page load
+        async function loadWebsiteSettings() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/website-settings`, {
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const settings = await response.json();
+                    
+                    // Load hero settings
+                    if (settings.hero) {
+                        document.getElementById('heroTitle').value = settings.hero.title || '';
+                        document.getElementById('heroSubtitle').value = settings.hero.subtitle || '';
+                        document.getElementById('heroCta').value = settings.hero.cta || '';
+                        document.getElementById('showHero').checked = settings.hero.show !== false;
+                        
+                        if (settings.hero.mediaUrl) {
+                            currentHeroMediaUrl = settings.hero.mediaUrl;
+                            currentHeroMediaKey = settings.hero.mediaKey;
+                            heroMediaType = settings.hero.mediaType || 'video';
+                            
+                            // Update toggle buttons
+                            setHeroMediaType(heroMediaType);
+                            
+                            // Update preview
+                            updateHeroMediaPreview(currentHeroMediaUrl, heroMediaType);
+                        }
+                    }
+                    
+                    // Load section visibility
+                    if (settings.sections) {
+                        document.getElementById('showStats').checked = settings.sections.stats !== false;
+                        document.getElementById('showIngredients').checked = settings.sections.ingredients !== false;
+                        document.getElementById('showReviews').checked = settings.sections.reviews !== false;
+                        document.getElementById('showBenefits').checked = settings.sections.benefits !== false;
+                        document.getElementById('showHowItWorks').checked = settings.sections.howItWorks !== false;
+                        document.getElementById('showFaq').checked = settings.sections.faq !== false;
+                    }
+                    
+                    // Load announcement
+                    if (settings.announcement) {
+                        document.getElementById('showAnnouncement').checked = settings.announcement.enabled || false;
+                        document.getElementById('announcementText').value = settings.announcement.text || '';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        // Save Changes
+        async function saveChanges() {
+            const settings = {
+                hero: {
+                    title: document.getElementById('heroTitle').value,
+                    subtitle: document.getElementById('heroSubtitle').value,
+                    cta: document.getElementById('heroCta').value,
+                    show: document.getElementById('showHero').checked,
+                    mediaType: heroMediaType,
+                    mediaUrl: currentHeroMediaUrl,
+                    mediaKey: currentHeroMediaKey
+                },
+                sections: {
+                    stats: document.getElementById('showStats').checked,
+                    ingredients: document.getElementById('showIngredients').checked,
+                    reviews: document.getElementById('showReviews').checked,
+                    benefits: document.getElementById('showBenefits').checked,
+                    howItWorks: document.getElementById('showHowItWorks').checked,
+                    faq: document.getElementById('showFaq').checked
+                },
+                announcement: {
+                    enabled: document.getElementById('showAnnouncement').checked,
+                    text: document.getElementById('announcementText').value
+                }
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/website-settings`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(settings)
+                });
+                
+                if (response.ok) {
+                    showToast('Settings saved successfully!', 'success');
+                } else {
+                    const error = await response.json();
+                    showToast(error.message || 'Failed to save settings', 'error');
+                }
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showToast('Failed to save settings. Please try again.', 'error');
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadWebsiteSettings);
+    </script>
+</body>
+</html>

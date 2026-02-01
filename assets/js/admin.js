@@ -54,12 +54,12 @@ function getCurrentAdmin() {
 function logout() {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminData');
-    window.location.href = '/login.html';
+    window.location.href = '/admin/login.html';
 }
 
 async function checkAuth() {
     if (!isAuthenticated()) {
-        window.location.href = '/login.html';
+        window.location.href = '/admin/login.html';
         return false;
     }
     
@@ -229,15 +229,20 @@ function renderProductsTable() {
     elements.productsTableBody.innerHTML = products.map(product => {
         // Handle flavours - they can be objects with 'name' property or plain strings
         const flavourNames = (product.flavours || []).map(f => typeof f === 'object' ? f.name : f);
+        const mediaCount = (product.media || []).length;
+        const firstMedia = product.media && product.media[0];
         
         return `
         <tr data-id="${product._id}">
             <td>
                 <div class="product-cell">
                     <div class="product-thumb">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                        </svg>
+                        ${firstMedia 
+                            ? `<img src="${firstMedia.url}" alt="${product.name}" class="media-thumb-preview">`
+                            : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                            </svg>`
+                        }
                     </div>
                     <div class="product-info">
                         <h4>${product.name}</h4>
@@ -246,13 +251,22 @@ function renderProductsTable() {
                 </div>
             </td>
             <td>
+                <button class="btn btn-secondary btn-sm media-count ${mediaCount > 0 ? 'has-media' : ''}" onclick="openMediaModal('${product._id}')" title="Manage media">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                    ${mediaCount}/3
+                </button>
+            </td>
+            <td>
                 <div class="flavours-list">
                     ${flavourNames.slice(0, 2).map(f => `<span class="flavour-tag">${f}</span>`).join('')}
                     ${flavourNames.length > 2 ? `<span class="flavour-more">+${flavourNames.length - 2}</span>` : ''}
                 </div>
             </td>
             <td>₹${getLowestPrice(product.packSizes).toLocaleString()}</td>
-            <td>${(product.packSizes || []).length} sizes</td>
             <td>
                 <span class="status-badge ${product.isActive ? 'active' : 'inactive'}">
                     <span class="status-dot"></span>
@@ -667,3 +681,380 @@ document.getElementById('productName')?.addEventListener('input', function() {
         document.getElementById('productSlug').value = slug;
     }
 });
+
+// ========== MEDIA UPLOAD ==========
+let currentMediaProductId = null;
+let currentMediaProduct = null;
+
+// Upload API base
+const UPLOAD_API = isLocal ? '/api/upload' : 'https://api.flowhydration.in/api/upload';
+
+function openMediaModal(productId) {
+    currentMediaProductId = productId;
+    currentMediaProduct = products.find(p => p._id === productId);
+    
+    if (!currentMediaProduct) {
+        showToast('Product not found', 'error');
+        return;
+    }
+    
+    document.getElementById('mediaProductName').textContent = `Managing media for: ${currentMediaProduct.name}`;
+    renderMediaGrid();
+    updateUploadZoneState();
+    openModal('mediaModal');
+    setupMediaEventListeners();
+}
+
+function setupMediaEventListeners() {
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('mediaFileInput');
+    
+    // Remove existing listeners to prevent duplicates
+    const newUploadZone = uploadZone.cloneNode(true);
+    uploadZone.parentNode.replaceChild(newUploadZone, uploadZone);
+    
+    const newFileInput = document.getElementById('mediaFileInput');
+    
+    // Click to upload
+    newUploadZone.addEventListener('click', () => {
+        if (!newUploadZone.classList.contains('disabled')) {
+            newFileInput.click();
+        }
+    });
+    
+    // File input change
+    newFileInput.addEventListener('change', handleFileSelect);
+    
+    // Drag and drop
+    newUploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        if (!newUploadZone.classList.contains('disabled')) {
+            newUploadZone.classList.add('drag-over');
+        }
+    });
+    
+    newUploadZone.addEventListener('dragleave', () => {
+        newUploadZone.classList.remove('drag-over');
+    });
+    
+    newUploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        newUploadZone.classList.remove('drag-over');
+        if (!newUploadZone.classList.contains('disabled')) {
+            const files = Array.from(e.dataTransfer.files);
+            uploadFiles(files);
+        }
+    });
+}
+
+function handleFileSelect(e) {
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
+        uploadFiles(files);
+    }
+    e.target.value = ''; // Reset input
+}
+
+async function uploadFiles(files) {
+    const currentMediaCount = (currentMediaProduct.media || []).length;
+    const maxAllowed = 3 - currentMediaCount;
+    
+    if (files.length > maxAllowed) {
+        showToast(`Can only upload ${maxAllowed} more file(s)`, 'error');
+        files = files.slice(0, maxAllowed);
+    }
+    
+    if (files.length === 0) return;
+    
+    // Validate files
+    const validFiles = [];
+    const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    const allowedVideoTypes = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'];
+    const maxSize = 50 * 1024 * 1024; // 50MB
+    
+    for (const file of files) {
+        if (![...allowedImageTypes, ...allowedVideoTypes].includes(file.type)) {
+            showToast(`Invalid file type: ${file.name}`, 'error');
+            continue;
+        }
+        if (file.size > maxSize) {
+            showToast(`File too large: ${file.name} (max 50MB)`, 'error');
+            continue;
+        }
+        validFiles.push(file);
+    }
+    
+    if (validFiles.length === 0) return;
+    
+    // Show progress
+    const progressContainer = document.getElementById('uploadProgress');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    progressContainer.style.display = 'block';
+    progressFill.style.width = '0%';
+    progressText.textContent = 'Uploading...';
+    
+    // Create FormData
+    const formData = new FormData();
+    validFiles.forEach(file => {
+        formData.append('media', file);
+    });
+    
+    try {
+        const xhr = new XMLHttpRequest();
+        
+        xhr.upload.addEventListener('progress', (e) => {
+            if (e.lengthComputable) {
+                const percent = Math.round((e.loaded / e.total) * 100);
+                progressFill.style.width = `${percent}%`;
+                progressText.textContent = `Uploading... ${percent}%`;
+            }
+        });
+        
+        xhr.addEventListener('load', async () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                const response = JSON.parse(xhr.responseText);
+                showToast(`${response.data.length} file(s) uploaded successfully`, 'success');
+                
+                // Update local product data
+                currentMediaProduct.media = response.product?.media || currentMediaProduct.media;
+                
+                // Refresh products list
+                await loadProducts();
+                currentMediaProduct = products.find(p => p._id === currentMediaProductId);
+                
+                renderMediaGrid();
+                updateUploadZoneState();
+            } else {
+                const error = JSON.parse(xhr.responseText);
+                showToast(error.error || 'Upload failed', 'error');
+            }
+            progressContainer.style.display = 'none';
+        });
+        
+        xhr.addEventListener('error', () => {
+            showToast('Upload failed. Please try again.', 'error');
+            progressContainer.style.display = 'none';
+        });
+        
+        xhr.open('POST', `${UPLOAD_API}/products/${currentMediaProductId}/media`);
+        xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('adminToken')}`);
+        xhr.send(formData);
+        
+    } catch (error) {
+        console.error('Upload error:', error);
+        showToast('Upload failed. Please try again.', 'error');
+        progressContainer.style.display = 'none';
+    }
+}
+
+function renderMediaGrid() {
+    const grid = document.getElementById('mediaGrid');
+    const media = currentMediaProduct.media || [];
+    
+    if (media.length === 0) {
+        grid.innerHTML = `
+            <div class="media-empty">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                <p>No media uploaded yet</p>
+            </div>
+        `;
+        return;
+    }
+    
+    grid.innerHTML = media
+        .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+        .map((item, index) => {
+            const isVideo = item.type === 'video';
+            const isPrimary = item.isPrimary;
+            const mediaId = item._id;
+            return `
+                <div class="media-item ${isPrimary ? 'is-primary' : ''}" draggable="true" data-key="${item.key}" data-index="${index}" data-id="${mediaId}">
+                    <span class="media-type-badge">${isVideo ? 'Video' : 'Image'}</span>
+                    <span class="media-order-badge">${index + 1}</span>
+                    ${isPrimary ? '<span class="media-primary-badge">Thumbnail</span>' : ''}
+                    ${isVideo 
+                        ? `<video src="${item.url}" muted></video>`
+                        : `<img src="${item.url}" alt="${item.alt || 'Product media'}">`
+                    }
+                    <div class="media-item-overlay">
+                        <div class="media-item-actions">
+                            ${!isVideo && !isPrimary ? `
+                                <button class="thumbnail-btn" title="Set as Thumbnail" onclick="setAsThumbnail('${mediaId}')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                                        <polyline points="21 15 16 10 5 21"/>
+                                    </svg>
+                                </button>
+                            ` : ''}
+                            ${isVideo ? `
+                                <button title="Preview" onclick="previewVideo('${item.url}')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="5 3 19 12 5 21 5 3"/>
+                                    </svg>
+                                </button>
+                            ` : ''}
+                            <button class="delete-btn" title="Delete" onclick="deleteMedia('${item.key}')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    
+    // Setup drag and drop for reordering
+    setupMediaDragDrop();
+}
+
+function setupMediaDragDrop() {
+    const mediaItems = document.querySelectorAll('.media-item[draggable="true"]');
+    
+    mediaItems.forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', item.dataset.key);
+            item.classList.add('dragging');
+        });
+        
+        item.addEventListener('dragend', () => {
+            item.classList.remove('dragging');
+        });
+        
+        item.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            item.classList.add('drag-over');
+        });
+        
+        item.addEventListener('dragleave', () => {
+            item.classList.remove('drag-over');
+        });
+        
+        item.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            item.classList.remove('drag-over');
+            
+            const draggedKey = e.dataTransfer.getData('text/plain');
+            const targetKey = item.dataset.key;
+            
+            if (draggedKey !== targetKey) {
+                await reorderMedia(draggedKey, targetKey);
+            }
+        });
+    });
+}
+
+async function reorderMedia(draggedKey, targetKey) {
+    const media = currentMediaProduct.media || [];
+    const draggedIndex = media.findIndex(m => m.key === draggedKey);
+    const targetIndex = media.findIndex(m => m.key === targetKey);
+    
+    if (draggedIndex === -1 || targetIndex === -1) return;
+    
+    // Create new order array
+    const newOrder = media.map(m => m.key);
+    const [removed] = newOrder.splice(draggedIndex, 1);
+    newOrder.splice(targetIndex, 0, removed);
+    
+    try {
+        const response = await fetch(`${UPLOAD_API}/products/${currentMediaProductId}/media/reorder`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ order: newOrder })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to reorder media');
+        }
+        
+        const data = await response.json();
+        currentMediaProduct.media = data.data;
+        
+        // Refresh products list
+        await loadProducts();
+        currentMediaProduct = products.find(p => p._id === currentMediaProductId);
+        
+        renderMediaGrid();
+        showToast('Media reordered successfully', 'success');
+    } catch (error) {
+        console.error('Error reordering media:', error);
+        showToast('Failed to reorder media', 'error');
+    }
+}
+
+async function deleteMedia(mediaKey) {
+    if (!confirm('Are you sure you want to delete this media?')) return;
+    
+    try {
+        const response = await fetch(`${UPLOAD_API}/products/${currentMediaProductId}/media/${encodeURIComponent(mediaKey)}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to delete media');
+        }
+        
+        showToast('Media deleted successfully', 'success');
+        
+        // Refresh products list
+        await loadProducts();
+        currentMediaProduct = products.find(p => p._id === currentMediaProductId);
+        
+        renderMediaGrid();
+        updateUploadZoneState();
+    } catch (error) {
+        console.error('Error deleting media:', error);
+        showToast('Failed to delete media', 'error');
+    }
+}
+
+function updateUploadZoneState() {
+    const uploadZone = document.getElementById('uploadZone');
+    const currentMediaCount = (currentMediaProduct?.media || []).length;
+    
+    if (currentMediaCount >= 3) {
+        uploadZone.classList.add('disabled');
+        uploadZone.querySelector('.upload-zone-content p').textContent = 'Maximum 3 media items reached';
+    } else {
+        uploadZone.classList.remove('disabled');
+        uploadZone.querySelector('.upload-zone-content p').innerHTML = 'Drag & drop files here or <span class="upload-link">browse</span>';
+    }
+}
+
+function previewVideo(url) {
+    window.open(url, '_blank');
+}
+
+async function setAsThumbnail(mediaId) {
+    try {
+        const response = await fetch(`${UPLOAD_API}/products/${currentMediaProductId}/media/${mediaId}`, {
+            method: 'PATCH',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ isPrimary: true })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to set as thumbnail');
+        }
+        
+        showToast('Thumbnail updated successfully', 'success');
+        
+        // Refresh products list
+        await loadProducts();
+        currentMediaProduct = products.find(p => p._id === currentMediaProductId);
+        
+        renderMediaGrid();
+    } catch (error) {
+        console.error('Error setting thumbnail:', error);
+        showToast('Failed to set thumbnail', 'error');
+    }
+}
+

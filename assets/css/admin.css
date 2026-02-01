@@ -568,6 +568,14 @@ input, select, textarea {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.product-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .product-info h4 {

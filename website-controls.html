@@ -1927,7 +1927,9 @@
         async function loadWebsiteSettings() {
             try {
                 const response = await fetch(`${API_BASE_URL}/website-settings`, {
-                    credentials: 'include'
+                    headers: {
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    }
                 });
                 
                 if (response.ok) {

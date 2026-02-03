@@ -321,10 +321,10 @@
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <script src="assets/js/config.js"></script>
     <script>
-        // API Configuration - use production API on GitHub Pages
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const API_BASE = isLocal ? '/api/admin' : 'https://api.flowhydration.in/api/admin';
+        // Use AUTH_API from config.js
+        const ADMIN_API = AUTH_API;
         
         // State
         let admins = [];
@@ -365,7 +365,7 @@
             }
             
             try {
-                const response = await fetch(`${API_BASE}/me`, {
+                const response = await fetch(`${ADMIN_API}/me`, {
                     headers: getAuthHeaders()
                 });
                 
@@ -442,7 +442,7 @@
         async function loadAdmins() {
             showLoading(true);
             try {
-                const response = await fetch(`${API_BASE}/users`, {
+                const response = await fetch(`${ADMIN_API}/users`, {
                     headers: getAuthHeaders()
                 });
                 
@@ -648,14 +648,14 @@
                 if (password) payload.password = password;
                 
                 if (isEditing) {
-                    response = await fetch(`${API_BASE}/users/${currentAdminData._id}`, {
+                    response = await fetch(`${ADMIN_API}/users/${currentAdminData._id}`, {
                         method: 'PUT',
                         headers: getAuthHeaders(),
                         body: JSON.stringify(payload)
                     });
                 } else {
                     payload.email = email;
-                    response = await fetch(`${API_BASE}/users`, {
+                    response = await fetch(`${ADMIN_API}/users`, {
                         method: 'POST',
                         headers: getAuthHeaders(),
                         body: JSON.stringify(payload)
@@ -683,7 +683,7 @@
         // ========== TOGGLE STATUS ==========
         async function toggleAdminStatus(adminId) {
             try {
-                const response = await fetch(`${API_BASE}/users/${adminId}/toggle`, {
+                const response = await fetch(`${ADMIN_API}/users/${adminId}/toggle`, {
                     method: 'PUT',
                     headers: getAuthHeaders()
                 });
@@ -720,7 +720,7 @@
             deleteBtn.textContent = 'Deleting...';
             
             try {
-                const response = await fetch(`${API_BASE}/users/${deleteAdminId}`, {
+                const response = await fetch(`${ADMIN_API}/users/${deleteAdminId}`, {
                     method: 'DELETE',
                     headers: getAuthHeaders()
                 });

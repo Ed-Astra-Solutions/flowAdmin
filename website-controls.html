@@ -321,6 +321,185 @@
             }
         }
 
+        /* Ingredients Editor */
+        .ingredients-editor {
+            margin-top: 16px;
+        }
+
+        .ingredients-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .ingredient-item {
+            display: grid;
+            grid-template-columns: 200px 1fr auto;
+            gap: 12px;
+            align-items: start;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+        }
+
+        .ingredient-item input,
+        .ingredient-item textarea {
+            padding: 10px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            resize: none;
+        }
+
+        .ingredient-item input:focus,
+        .ingredient-item textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .ingredient-item textarea {
+            min-height: 60px;
+        }
+
+        .remove-ingredient-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .remove-ingredient-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .add-ingredient-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px;
+            border: 2px dashed var(--card-border);
+            border-radius: 10px;
+            color: var(--text-muted);
+            background: none;
+            width: 100%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .add-ingredient-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .ingredient-item {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Stats Bar Editor */
+        .stats-editor {
+            margin-top: 16px;
+        }
+
+        .stats-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-item-editor {
+            display: grid;
+            grid-template-columns: 120px 1fr auto;
+            gap: 12px;
+            align-items: center;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+        }
+
+        .stat-item-editor input {
+            padding: 10px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .stat-item-editor input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .stat-item-editor .stat-value-input {
+            font-weight: 700;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .remove-stat-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .remove-stat-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .add-stat-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px;
+            border: 2px dashed var(--card-border);
+            border-radius: 10px;
+            color: var(--text-muted);
+            background: none;
+            width: 100%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .add-stat-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .stat-item-editor {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* Modern Toggle Switch */
         .toggle-switch {
             position: relative;
@@ -1219,6 +1398,79 @@
                                 </div>
                             </div>
 
+                            <!-- Stats Bar Editor -->
+                            <div class="control-section">
+                                <h3 class="control-section-title">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M18 20V10"/>
+                                        <path d="M12 20V4"/>
+                                        <path d="M6 20v-6"/>
+                                    </svg>
+                                    Stats Bar
+                                </h3>
+                                <p style="color: var(--text-muted); margin-bottom: 16px; font-size: 14px;">
+                                    Edit the statistics displayed in the stats bar section on the homepage.
+                                </p>
+                                
+                                <div class="stats-editor">
+                                    <div class="stats-list" id="statsList">
+                                        <!-- Stats will be rendered here -->
+                                    </div>
+                                    <button type="button" class="add-stat-btn" onclick="addStat()">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                                        </svg>
+                                        Add Stat
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Ingredients Section Editor -->
+                            <div class="control-section">
+                                <h3 class="control-section-title">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/>
+                                        <path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                                        <path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/>
+                                        <path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/>
+                                    </svg>
+                                    Ingredients Section
+                                </h3>
+                                
+                                <div class="control-group" style="margin-bottom: 16px;">
+                                    <div class="control-row">
+                                        <div class="control-info">
+                                            <h4>Section Title</h4>
+                                            <p>Main heading for the ingredients section</p>
+                                        </div>
+                                        <div class="control-action" style="flex: 1; max-width: 400px;">
+                                            <input type="text" class="form-input" id="ingredientsSectionTitle" placeholder="Electrolyte Balance & Osmoregulation">
+                                        </div>
+                                    </div>
+                                    <div class="control-row">
+                                        <div class="control-info">
+                                            <h4>Section Subtitle</h4>
+                                            <p>Description text below the title</p>
+                                        </div>
+                                        <div class="control-action" style="flex: 1; max-width: 400px;">
+                                            <textarea class="form-textarea" id="ingredientsSectionSubtitle" placeholder="A precise blend of sodium, potassium..." style="min-height: 60px;"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="ingredients-editor">
+                                    <div class="ingredients-list" id="ingredientsList">
+                                        <!-- Ingredients will be rendered here -->
+                                    </div>
+                                    <button type="button" class="add-ingredient-btn" onclick="addIngredient()">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                                        </svg>
+                                        Add Ingredient
+                                    </button>
+                                </div>
+                            </div>
+
                             <!-- Announcement Bar -->
                             <div class="control-section">
                                 <h3 class="control-section-title">
@@ -1324,12 +1576,9 @@
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <script src="assets/js/config.js"></script>
     <script src="assets/js/admin.js"></script>
     <script>
-        // API Base URL
-        const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const API_BASE_URL = isLocalDev ? '/api' : 'https://api.flowhydration.in/api';
-        
         // Get auth token
         function getAuthToken() {
             return localStorage.getItem('adminToken');
@@ -1719,6 +1968,32 @@
                         document.getElementById('showAnnouncement').checked = settings.announcement.enabled || false;
                         document.getElementById('announcementText').value = settings.announcement.text || '';
                     }
+
+                    // Load ingredients section
+                    if (settings.ingredientsSection) {
+                        document.getElementById('ingredientsSectionTitle').value = settings.ingredientsSection.title || '';
+                        document.getElementById('ingredientsSectionSubtitle').value = settings.ingredientsSection.subtitle || '';
+                        ingredientsData = settings.ingredientsSection.items || [];
+                        renderIngredientsList();
+                    } else {
+                        // Default ingredients if none saved
+                        ingredientsData = [];
+                        renderIngredientsList();
+                    }
+
+                    // Load stats bar
+                    if (settings.statsBar && settings.statsBar.items && settings.statsBar.items.length > 0) {
+                        statsData = settings.statsBar.items;
+                    } else {
+                        // Default stats if none saved
+                        statsData = [
+                            { value: '5+', label: 'Key Electrolytes' },
+                            { value: '0g', label: 'Added Sugar' },
+                            { value: '300+', label: 'Biochemical Reactions' },
+                            { value: '100%', label: 'Clean Formula' }
+                        ];
+                    }
+                    renderStatsList();
                 }
             } catch (error) {
                 console.error('Error loading settings:', error);
@@ -1748,6 +2023,14 @@
                 announcement: {
                     enabled: document.getElementById('showAnnouncement').checked,
                     text: document.getElementById('announcementText').value
+                },
+                ingredientsSection: {
+                    title: document.getElementById('ingredientsSectionTitle').value,
+                    subtitle: document.getElementById('ingredientsSectionSubtitle').value,
+                    items: getIngredientsData()
+                },
+                statsBar: {
+                    items: getStatsData()
                 }
             };
 
@@ -1772,6 +2055,134 @@
                 console.error('Error saving settings:', error);
                 showToast('Failed to save settings. Please try again.', 'error');
             }
+        }
+
+        // ========== INGREDIENTS MANAGEMENT ==========
+        let ingredientsData = [];
+
+        function renderIngredientsList() {
+            const container = document.getElementById('ingredientsList');
+            if (!container) return;
+
+            if (ingredientsData.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No ingredients added yet. Click "Add Ingredient" to get started.</p>';
+                return;
+            }
+
+            container.innerHTML = ingredientsData.map((ingredient, index) => `
+                <div class="ingredient-item" data-index="${index}">
+                    <input type="text" class="ingredient-name-input" placeholder="Ingredient name (e.g., Sodium Chloride)" value="${escapeHtml(ingredient.name || '')}">
+                    <textarea class="ingredient-desc-input" placeholder="Description of the ingredient's benefits...">${escapeHtml(ingredient.description || '')}</textarea>
+                    <button type="button" class="remove-ingredient-btn" onclick="removeIngredient(${index})" title="Remove">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                    </button>
+                </div>
+            `).join('');
+
+            // Add input listeners to sync data
+            container.querySelectorAll('.ingredient-item').forEach((item, index) => {
+                item.querySelector('.ingredient-name-input').addEventListener('input', (e) => {
+                    ingredientsData[index].name = e.target.value;
+                });
+                item.querySelector('.ingredient-desc-input').addEventListener('input', (e) => {
+                    ingredientsData[index].description = e.target.value;
+                });
+            });
+        }
+
+        function addIngredient() {
+            ingredientsData.push({ name: '', description: '' });
+            renderIngredientsList();
+            
+            // Focus on the new input
+            setTimeout(() => {
+                const items = document.querySelectorAll('.ingredient-item');
+                const lastItem = items[items.length - 1];
+                if (lastItem) {
+                    lastItem.querySelector('.ingredient-name-input').focus();
+                }
+            }, 100);
+        }
+
+        function removeIngredient(index) {
+            ingredientsData.splice(index, 1);
+            renderIngredientsList();
+        }
+
+        function getIngredientsData() {
+            return ingredientsData.filter(i => i.name && i.name.trim());
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ========== STATS BAR MANAGEMENT ==========
+        let statsData = [
+            { value: '5+', label: 'Key Electrolytes' },
+            { value: '0g', label: 'Added Sugar' },
+            { value: '300+', label: 'Biochemical Reactions' },
+            { value: '100%', label: 'Clean Formula' }
+        ];
+
+        function renderStatsList() {
+            const container = document.getElementById('statsList');
+            if (!container) return;
+
+            if (statsData.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No stats added yet. Click "Add Stat" to get started.</p>';
+                return;
+            }
+
+            container.innerHTML = statsData.map((stat, index) => `
+                <div class="stat-item-editor" data-index="${index}">
+                    <input type="text" class="stat-value-input" placeholder="5+" value="${escapeHtml(stat.value || '')}">
+                    <input type="text" class="stat-label-input" placeholder="Key Electrolytes" value="${escapeHtml(stat.label || '')}">
+                    <button type="button" class="remove-stat-btn" onclick="removeStat(${index})" title="Remove">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                    </button>
+                </div>
+            `).join('');
+
+            // Add input listeners to sync data
+            container.querySelectorAll('.stat-item-editor').forEach((item, index) => {
+                item.querySelector('.stat-value-input').addEventListener('input', (e) => {
+                    statsData[index].value = e.target.value;
+                });
+                item.querySelector('.stat-label-input').addEventListener('input', (e) => {
+                    statsData[index].label = e.target.value;
+                });
+            });
+        }
+
+        function addStat() {
+            statsData.push({ value: '', label: '' });
+            renderStatsList();
+            
+            // Focus on the new input
+            setTimeout(() => {
+                const items = document.querySelectorAll('.stat-item-editor');
+                const lastItem = items[items.length - 1];
+                if (lastItem) {
+                    lastItem.querySelector('.stat-value-input').focus();
+                }
+            }, 100);
+        }
+
+        function removeStat(index) {
+            statsData.splice(index, 1);
+            renderStatsList();
+        }
+
+        function getStatsData() {
+            return statsData.filter(s => s.value && s.value.trim() && s.label && s.label.trim());
         }
         
         // Initialize

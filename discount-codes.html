@@ -689,13 +689,11 @@
         <span id="toastMessage"></span>
     </div>
 
+    <script src="assets/js/config.js"></script>
     <script src="assets/js/admin.js"></script>
     <script>
-        // Use API_BASE from admin.js, or define locally if not available
-        const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const DISCOUNT_API = isLocalDev 
-            ? '/api' 
-            : 'https://api.flowhydration.in/api';
+        // Use API_BASE_URL from config.js
+        const DISCOUNT_API = API_BASE_URL;
         
         let discountCodes = [];
         let editingCodeId = null;

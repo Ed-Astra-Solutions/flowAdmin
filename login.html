@@ -349,10 +349,10 @@
         </div>
     </div>
 
+    <script src="assets/js/config.js"></script>
     <script>
-        // API Configuration - use production API on GitHub Pages
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const API_BASE = isLocal ? '/api/admin' : 'https://api.flowhydration.in/api/admin';
+        // Use AUTH_API from config.js (login page uses admin auth endpoints)
+        const LOGIN_API = AUTH_API;
         
         // Check if already logged in
         const token = localStorage.getItem('adminToken');
@@ -363,7 +363,7 @@
 
         async function verifyAndRedirect() {
             try {
-                const response = await fetch(`${API_BASE}/me`, {
+                const response = await fetch(`${LOGIN_API}/me`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
                     }
@@ -419,7 +419,7 @@
             loginBtn.disabled = true;
             
             try {
-                const response = await fetch(`${API_BASE}/login`, {
+                const response = await fetch(`${LOGIN_API}/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

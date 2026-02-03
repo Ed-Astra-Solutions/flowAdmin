@@ -1,15 +1,7 @@
 /**
  * Flow Admin Console - Main JavaScript
+ * Note: config.js must be loaded before this file
  */
-
-// API Configuration
-// Production: https://api.flowhydration.in/api
-// Local: /api (relative path for same-origin)
-const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const API_BASE = isLocal ? '/api' : 'https://api.flowhydration.in/api';
-
-// Auth Configuration
-const AUTH_API = isLocal ? '/api/admin' : 'https://api.flowhydration.in/api/admin';
 
 // State
 let products = [];
@@ -304,6 +296,11 @@ function openAddProductModal() {
     if (elements.modalTitle) elements.modalTitle.textContent = 'Add New Product';
     resetProductForm();
     addPackSizeRow(); // Add one empty pack size row
+    
+    // Hide reviews section for new products
+    const reviewsSection = document.getElementById('reviewsSection');
+    if (reviewsSection) reviewsSection.style.display = 'none';
+    
     openModal('productModal');
 }
 
@@ -317,6 +314,14 @@ async function openEditProductModal(productId) {
     
     if (elements.modalTitle) elements.modalTitle.textContent = 'Edit Product';
     populateProductForm(currentProduct);
+    
+    // Show and populate reviews section
+    const reviewsSection = document.getElementById('reviewsSection');
+    if (reviewsSection) {
+        reviewsSection.style.display = 'block';
+        renderReviewsList();
+    }
+    
     openModal('productModal');
 }
 
@@ -685,9 +690,6 @@ document.getElementById('productName')?.addEventListener('input', function() {
 // ========== MEDIA UPLOAD ==========
 let currentMediaProductId = null;
 let currentMediaProduct = null;
-
-// Upload API base
-const UPLOAD_API = isLocal ? '/api/upload' : 'https://api.flowhydration.in/api/upload';
 
 function openMediaModal(productId) {
     currentMediaProductId = productId;
@@ -1058,3 +1060,226 @@ async function setAsThumbnail(mediaId) {
     }
 }
 
+// ========== REVIEWS MANAGEMENT ==========
+let currentEditingReview = null;
+
+function initReviewStars() {
+    const starContainer = document.getElementById('starRatingInput');
+    if (!starContainer) return;
+    
+    const stars = starContainer.querySelectorAll('.star-btn');
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = parseInt(this.dataset.rating);
+            document.getElementById('reviewRating').value = rating;
+            updateStarDisplay(rating);
+        });
+    });
+    
+    // Set default to 5 stars
+    updateStarDisplay(5);
+}
+
+function updateStarDisplay(rating) {
+    const stars = document.querySelectorAll('#starRatingInput .star-btn');
+    stars.forEach((star, index) => {
+        star.classList.toggle('active', index < rating);
+    });
+}
+
+function openAddReviewModal() {
+    currentEditingReview = null;
+    document.getElementById('reviewModalTitle').textContent = 'Add Review';
+    document.getElementById('submitReviewBtn').textContent = 'Add Review';
+    document.getElementById('reviewForm').reset();
+    document.getElementById('reviewRating').value = 5;
+    updateStarDisplay(5);
+    openModal('reviewModal');
+}
+
+function openEditReviewModal(reviewId) {
+    if (!currentProduct || !currentProduct.reviews) return;
+    
+    const review = currentProduct.reviews.find(r => r._id === reviewId);
+    if (!review) return;
+    
+    currentEditingReview = review;
+    document.getElementById('reviewModalTitle').textContent = 'Edit Review';
+    document.getElementById('submitReviewBtn').textContent = 'Update Review';
+    
+    document.getElementById('reviewAuthor').value = review.author || '';
+    document.getElementById('reviewTitle').value = review.title || '';
+    document.getElementById('reviewContent').value = review.content || '';
+    document.getElementById('reviewVerified').checked = review.verified !== false;
+    document.getElementById('reviewRating').value = review.rating || 5;
+    updateStarDisplay(review.rating || 5);
+    
+    openModal('reviewModal');
+}
+
+async function handleReviewSubmit(e) {
+    e.preventDefault();
+    
+    if (!currentProduct) {
+        showToast('No product selected', 'error');
+        return;
+    }
+    
+    const reviewData = {
+        author: document.getElementById('reviewAuthor').value.trim(),
+        rating: parseInt(document.getElementById('reviewRating').value),
+        title: document.getElementById('reviewTitle').value.trim(),
+        content: document.getElementById('reviewContent').value.trim(),
+        verified: document.getElementById('reviewVerified').checked
+    };
+    
+    if (!reviewData.author || !reviewData.content) {
+        showToast('Please fill in required fields', 'error');
+        return;
+    }
+    
+    const submitBtn = document.getElementById('submitReviewBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving...';
+    
+    try {
+        let url, method;
+        
+        if (currentEditingReview) {
+            // Update existing review
+            url = `${API_BASE}/products/admin/${currentProduct._id}/reviews/${currentEditingReview._id}`;
+            method = 'PUT';
+        } else {
+            // Add new review
+            url = `${API_BASE}/products/admin/${currentProduct._id}/reviews`;
+            method = 'POST';
+        }
+        
+        const response = await fetch(url, {
+            method,
+            headers: getAuthHeaders(),
+            body: JSON.stringify(reviewData)
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to save review');
+        }
+        
+        const result = await response.json();
+        
+        // Update local product data
+        currentProduct = result.product;
+        const productIndex = products.findIndex(p => p._id === currentProduct._id);
+        if (productIndex !== -1) {
+            products[productIndex] = currentProduct;
+        }
+        
+        showToast(currentEditingReview ? 'Review updated successfully' : 'Review added successfully', 'success');
+        closeModal('reviewModal');
+        renderReviewsList();
+        
+    } catch (error) {
+        console.error('Error saving review:', error);
+        showToast(error.message, 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = currentEditingReview ? 'Update Review' : 'Add Review';
+    }
+}
+
+async function deleteReview(reviewId) {
+    if (!currentProduct) return;
+    
+    if (!confirm('Are you sure you want to delete this review?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/products/admin/${currentProduct._id}/reviews/${reviewId}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to delete review');
+        }
+        
+        const result = await response.json();
+        
+        // Update local product data
+        currentProduct = result.product;
+        const productIndex = products.findIndex(p => p._id === currentProduct._id);
+        if (productIndex !== -1) {
+            products[productIndex] = currentProduct;
+        }
+        
+        showToast('Review deleted successfully', 'success');
+        renderReviewsList();
+        
+    } catch (error) {
+        console.error('Error deleting review:', error);
+        showToast('Failed to delete review', 'error');
+    }
+}
+
+function renderReviewsList() {
+    const container = document.getElementById('reviewsList');
+    if (!container) return;
+    
+    const reviews = currentProduct?.reviews || [];
+    
+    if (reviews.length === 0) {
+        container.innerHTML = '<div class="reviews-empty">No reviews yet. Add a review to display on the product page.</div>';
+        return;
+    }
+    
+    container.innerHTML = reviews.map(review => {
+        const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+        const date = new Date(review.date).toLocaleDateString('en-IN', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+        
+        return `
+            <div class="review-item">
+                <div class="review-item-content">
+                    <div class="review-item-header">
+                        <span class="review-author">${escapeHtml(review.author)}</span>
+                        <span class="review-stars">${stars}</span>
+                        ${review.verified ? '<span class="review-verified">Verified</span>' : ''}
+                    </div>
+                    ${review.title ? `<div class="review-title">${escapeHtml(review.title)}</div>` : ''}
+                    <div class="review-text">${escapeHtml(review.content)}</div>
+                    <div class="review-date">${date}</div>
+                </div>
+                <div class="review-actions">
+                    <button onclick="openEditReviewModal('${review._id}')" title="Edit">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                    </button>
+                    <button class="delete" onclick="deleteReview('${review._id}')" title="Delete">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Initialize star rating when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    initReviewStars();
+});

@@ -377,11 +377,79 @@
                                 <span class="checkbox-label">Featured Product</span>
                             </label>
                         </div>
+                        
+                        <!-- Reviews Section (only shown when editing) -->
+                        <div class="form-group full-width reviews-section" id="reviewsSection" style="display: none;">
+                            <div class="reviews-header">
+                                <label class="form-label">Customer Reviews</label>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="openAddReviewModal()">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                                    </svg>
+                                    Add Review
+                                </button>
+                            </div>
+                            <div class="reviews-list" id="reviewsList">
+                                <div class="reviews-empty">No reviews yet</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('productModal')">Cancel</button>
                     <button type="submit" class="btn btn-primary" id="submitProductBtn">Create Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div class="modal-overlay" id="reviewModal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="reviewModalTitle">Add Review</h3>
+                <button class="modal-close" onclick="closeModal('reviewModal')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="reviewForm" onsubmit="handleReviewSubmit(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Author Name *</label>
+                        <input type="text" class="form-input" id="reviewAuthor" placeholder="Customer name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Rating *</label>
+                        <div class="star-rating-input" id="starRatingInput">
+                            <button type="button" class="star-btn" data-rating="1">★</button>
+                            <button type="button" class="star-btn" data-rating="2">★</button>
+                            <button type="button" class="star-btn" data-rating="3">★</button>
+                            <button type="button" class="star-btn" data-rating="4">★</button>
+                            <button type="button" class="star-btn" data-rating="5">★</button>
+                        </div>
+                        <input type="hidden" id="reviewRating" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Review Title</label>
+                        <input type="text" class="form-input" id="reviewTitle" placeholder="Brief summary">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Review Content *</label>
+                        <textarea class="form-textarea" id="reviewContent" placeholder="Write the review..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-item" style="width: fit-content;">
+                            <input type="checkbox" id="reviewVerified" checked>
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-label">Verified Purchase</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('reviewModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submitReviewBtn">Add Review</button>
                 </div>
             </form>
         </div>
@@ -738,6 +806,7 @@
         }
     </style>
 
+    <script src="assets/js/config.js"></script>
     <script src="assets/js/admin.js"></script>
 </body>
 </html>

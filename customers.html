@@ -479,12 +479,11 @@
         }
     </style>
 
+    <script src="assets/js/config.js"></script>
     <script src="assets/js/admin.js"></script>
     <script>
-        // API Configuration - use same as admin.js
-        const CUSTOMERS_API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? '/api/admin'
-            : 'https://api.flowhydration.in/api/admin';
+        // Use AUTH_API from config.js
+        const CUSTOMERS_API = AUTH_API;
         
         let currentPage = 1;
         let totalPages = 1;

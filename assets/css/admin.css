@@ -1215,3 +1215,62 @@ input, select, textarea {
         grid-template-columns: 1fr 1fr;
     }
 }
+
+/* ========== CATEGORY BADGES ========== */
+.category-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.category-hydration {
+    background: rgba(0, 212, 255, 0.15);
+    color: #00d4ff;
+}
+
+.category-energy {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.category-recovery {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+}
+
+.category-bundle {
+    background: rgba(124, 58, 237, 0.15);
+    color: #7c3aed;
+}
+
+.category-accessories {
+    background: rgba(236, 72, 153, 0.15);
+    color: #ec4899;
+}
+
+/* ========== PACK SIZES HEADER ========== */
+.pack-sizes-header {
+    display: grid;
+    grid-template-columns: 100px 100px 120px 120px 1fr auto;
+    gap: 12px;
+    padding: 0 16px 8px;
+    margin-bottom: 8px;
+}
+
+.pack-sizes-header span {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+    .pack-sizes-header {
+        display: none;
+    }
+}

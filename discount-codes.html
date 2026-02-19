@@ -135,172 +135,546 @@
             color: var(--text-secondary);
         }
 
-        /* Modal Styles */
-        .modal-overlay {
+        /* Slide-in Panel */
+        .dc-panel-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 900;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .dc-panel-backdrop.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .dc-panel {
             position: fixed;
             top: 0;
-            left: 0;
             right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 1rem;
-        }
-
-        .modal-overlay.show {
+            width: 480px;
+            max-width: 100vw;
+            height: 100vh;
+            background: #0d0d14;
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
+            z-index: 950;
             display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
         }
 
-        .modal {
-            background: var(--bg-primary);
-            border-radius: 16px;
-            width: 100%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            border: 1px solid var(--border);
+        .dc-panel.open {
+            transform: translateX(0);
         }
 
-        .modal-header {
+        /* Panel Header */
+        .dc-panel-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            flex-shrink: 0;
         }
 
-        .modal-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-secondary);
-            padding: 0.5rem;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .modal-close:hover {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 0.875rem;
-            transition: all 0.2s;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .form-input.code-input {
-            font-family: 'Courier New', monospace;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .form-select {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 0.875rem;
-            cursor: pointer;
-        }
-
-        .form-checkbox {
+        .dc-panel-header-left {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            cursor: pointer;
         }
 
-        .form-checkbox input {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--primary);
-        }
-
-        .form-hint {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-top: 0.35rem;
-        }
-
-        .modal-footer {
+        .dc-panel-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(124, 58, 237, 0.15));
+            color: var(--primary);
             display: flex;
-            justify-content: flex-end;
-            gap: 0.75rem;
-            padding: 1.5rem;
-            border-top: 1px solid var(--border);
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
-        .btn {
-            padding: 0.75rem 1.5rem;
+        .dc-panel-header .dc-panel-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1px;
+        }
+
+        .dc-panel-subtitle {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .dc-panel-close {
+            width: 34px;
+            height: 34px;
             border-radius: 8px;
-            font-size: 0.875rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dc-panel-close:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        /* Panel Body */
+        .dc-panel-body {
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.08) transparent;
+        }
+
+        .dc-panel-body::-webkit-scrollbar {
+            width: 5px;
+        }
+        .dc-panel-body::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.08);
+            border-radius: 3px;
+        }
+
+        /* Sections */
+        .dc-section {
+            padding: 1.125rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .dc-section-last {
+            border-bottom: none;
+        }
+
+        .dc-section-label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--primary);
+            margin-bottom: 0.875rem;
+        }
+
+        .dc-section-label svg {
+            opacity: 0.7;
+        }
+
+        .dc-required {
+            color: #ef4444;
+        }
+
+        /* Form elements */
+        .dc-panel .form-group {
+            margin-bottom: 0.875rem;
+        }
+
+        .dc-panel .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .dc-panel .form-label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.65);
+            margin-bottom: 0.35rem;
+        }
+
+        .dc-panel .form-input,
+        .dc-panel .form-select {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.85rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .dc-panel .form-input:hover,
+        .dc-panel .form-select:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .dc-panel .form-input:focus,
+        .dc-panel .form-select:focus {
+            border-color: rgba(0, 212, 255, 0.4);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.08);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .dc-panel .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .dc-panel .form-input.code-input {
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .dc-panel .form-hint {
+            font-size: 0.68rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 0.25rem;
+        }
+
+        .dc-panel .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        /* Code input with generate button */
+        .dc-code-input-wrap {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .dc-code-input-wrap .form-input {
+            flex: 1;
+        }
+
+        .dc-generate-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0 0.75rem;
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 8px;
+            color: #a78bfa;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+
+        .dc-generate-btn:hover {
+            background: rgba(124, 58, 237, 0.18);
+            border-color: rgba(124, 58, 237, 0.35);
+            color: #c4b5fd;
+        }
+
+        .dc-generate-btn:active {
+            transform: scale(0.97);
+        }
+
+        .dc-generate-btn svg {
+            transition: transform 0.3s;
+        }
+
+        .dc-generate-btn:hover svg {
+            transform: rotate(180deg);
+        }
+
+        /* Character count */
+        .dc-char-count {
+            text-align: right;
+            opacity: 0.6;
+        }
+
+        /* Type Switcher */
+        .dc-type-switcher {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.375rem;
+            padding: 3px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 9px;
+        }
+
+        .dc-type-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.55rem 0.75rem;
+            border: 1px solid transparent;
+            border-radius: 7px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.8rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
-            border: none;
+            font-family: inherit;
         }
 
-        .btn-secondary {
-            background: var(--bg-secondary);
+        .dc-type-btn:hover {
+            color: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .dc-type-btn.active {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.2);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Input with unit */
+        .dc-input-with-unit {
+            position: relative;
+        }
+
+        .dc-input-with-unit .form-input {
+            padding-right: 2.75rem;
+        }
+
+        .dc-input-unit {
+            position: absolute;
+            right: 1px;
+            top: 1px;
+            bottom: 1px;
+            display: flex;
+            align-items: center;
+            padding: 0 0.7rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 0 7px 7px 0;
+            pointer-events: none;
+        }
+
+        /* Toggle Rows */
+        .dc-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0.875rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 9px;
+            margin-bottom: 0.5rem;
+            transition: border-color 0.2s;
+        }
+
+        .dc-toggle-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .dc-toggle-row:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dc-toggle-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .dc-toggle-label {
+            font-size: 0.82rem;
+            font-weight: 600;
             color: var(--text-primary);
-            border: 1px solid var(--border);
         }
 
-        .btn-secondary:hover {
-            background: var(--bg-tertiary);
+        .dc-toggle-desc {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.4);
         }
 
-        .btn-primary {
-            background: var(--primary);
-            color: var(--bg-primary);
+        /* Toggle Switch */
+        .dc-toggle {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            flex-shrink: 0;
+            cursor: pointer;
         }
 
-        .btn-primary:hover {
-            opacity: 0.9;
+        .dc-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .dc-toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 22px;
+            transition: all 0.25s ease;
+        }
+
+        .dc-toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            left: 3px;
+            bottom: 3px;
+            background: rgba(255, 255, 255, 0.55);
+            border-radius: 50%;
+            transition: all 0.25s ease;
+        }
+
+        .dc-toggle input:checked + .dc-toggle-slider {
+            background: linear-gradient(135deg, #00d4ff, #00a8cc);
+        }
+
+        .dc-toggle input:checked + .dc-toggle-slider::before {
+            transform: translateX(18px);
+            background: #fff;
+        }
+
+        /* Live Preview */
+        .dc-preview {
+            padding: 0.875rem 1.5rem 1.125rem;
+        }
+
+        .dc-preview-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 0.5rem;
+        }
+
+        .dc-preview-card {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(124, 58, 237, 0.05));
+            border: 1px dashed rgba(0, 212, 255, 0.15);
+            border-radius: 10px;
+        }
+
+        .dc-preview-code {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 0.95rem;
+            background: rgba(0, 212, 255, 0.12);
+            color: var(--primary);
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
+            letter-spacing: 0.06em;
+            white-space: nowrap;
+        }
+
+        .dc-preview-value {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--success);
+            white-space: nowrap;
+        }
+
+        .dc-preview-details {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1.4;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        /* Panel Footer */
+        .dc-panel-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            gap: 0.625rem;
+            flex-shrink: 0;
+        }
+
+        .dc-panel-footer .btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1rem;
+            border-radius: 9px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .dc-panel-footer .btn-cancel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.6);
+            flex: 0 0 auto;
+        }
+
+        .dc-panel-footer .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .dc-panel-footer .btn-save {
+            background: linear-gradient(135deg, #00d4ff, #00a8cc);
+            color: #0a0a0f;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2);
+        }
+
+        .dc-panel-footer .btn-save:hover {
+            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .dc-panel-footer .btn-save:active {
+            transform: translateY(0);
+        }
+
+        .dc-panel-footer .btn-save:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .dc-panel {
+                width: 100vw;
+            }
+
+            .dc-panel .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .dc-preview-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+
+            .dc-preview-details {
+                margin-left: 0;
+                text-align: left;
+            }
         }
 
         /* Create Code Button */
@@ -596,93 +970,183 @@
         </main>
     </div>
 
-    <!-- Create/Edit Modal -->
-    <div class="modal-overlay" id="codeModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">Create Discount Code</h3>
-                <button class="modal-close" onclick="closeModal()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    <!-- Slide-in Panel for Create/Edit -->
+    <div class="dc-panel-backdrop" id="dcPanelBackdrop"></div>
+    <aside class="dc-panel" id="dcPanel">
+        <!-- Panel Header -->
+        <div class="dc-panel-header">
+            <div class="dc-panel-header-left">
+                <div class="dc-panel-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
                     </svg>
-                </button>
+                </div>
+                <div>
+                    <div class="dc-panel-title" id="panelTitle">Create Discount Code</div>
+                    <div class="dc-panel-subtitle" id="panelSubtitle">Set up a new coupon</div>
+                </div>
             </div>
-            <div class="modal-body">
-                <form id="codeForm">
-                    <input type="hidden" id="codeId">
-                    
-                    <div class="form-group">
-                        <label class="form-label">Discount Code *</label>
-                        <input type="text" class="form-input code-input" id="codeInput" placeholder="e.g., SAVE20" required>
-                        <p class="form-hint">Code will be converted to uppercase automatically</p>
+            <button class="dc-panel-close" id="dcPanelClose" type="button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Panel Body -->
+        <div class="dc-panel-body">
+            <form id="codeForm" autocomplete="off">
+                <input type="hidden" id="codeId">
+
+                <!-- Section: Code & Description -->
+                <div class="dc-section">
+                    <div class="dc-section-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                        Code Details
                     </div>
-                    
+
+                    <div class="form-group">
+                        <label class="form-label">Discount Code <span class="dc-required">*</span></label>
+                        <div class="dc-code-input-wrap">
+                            <input type="text" class="form-input code-input" id="codeInput" placeholder="e.g., SAVE20" required>
+                            <button type="button" class="dc-generate-btn" id="generateCodeBtn">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+                                Generate
+                            </button>
+                        </div>
+                        <p class="form-hint">Auto-converted to uppercase</p>
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label">Description</label>
-                        <input type="text" class="form-input" id="descriptionInput" placeholder="e.g., 20% off for new customers">
+                        <input type="text" class="form-input" id="descriptionInput" placeholder="e.g., 20% off for new customers" maxlength="100">
+                        <p class="form-hint dc-char-count"><span id="descCharCount">0</span>/100</p>
                     </div>
-                    
+                </div>
+
+                <!-- Section: Discount Value -->
+                <div class="dc-section">
+                    <div class="dc-section-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                        Discount Value
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Type <span class="dc-required">*</span></label>
+                        <div class="dc-type-switcher">
+                            <button type="button" class="dc-type-btn active" data-type="percent">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+                                Percentage
+                            </button>
+                            <button type="button" class="dc-type-btn" data-type="flat">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                                Flat Amount
+                            </button>
+                        </div>
+                        <input type="hidden" id="typeSelect" value="percent">
+                    </div>
+
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Discount Type *</label>
-                            <select class="form-select" id="typeSelect" onchange="toggleMaxDiscount()">
-                                <option value="percent">Percentage (%)</option>
-                                <option value="flat">Flat Amount (₹)</option>
-                            </select>
+                            <label class="form-label">Value <span class="dc-required">*</span></label>
+                            <div class="dc-input-with-unit">
+                                <input type="number" class="form-input" id="valueInput" placeholder="e.g., 20" min="0" step="0.01" required>
+                                <span class="dc-input-unit" id="valueUnit">%</span>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Discount Value *</label>
-                            <input type="number" class="form-input" id="valueInput" placeholder="e.g., 20" min="0" step="0.01" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
                         <div class="form-group" id="maxDiscountGroup">
-                            <label class="form-label">Max Discount (₹)</label>
-                            <input type="number" class="form-input" id="maxDiscountInput" placeholder="e.g., 500">
-                            <p class="form-hint">Leave empty for no cap</p>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Min Order Value (₹)</label>
-                            <input type="number" class="form-input" id="minOrderInput" placeholder="e.g., 999" min="0">
+                            <label class="form-label">Max Cap</label>
+                            <div class="dc-input-with-unit">
+                                <input type="number" class="form-input" id="maxDiscountInput" placeholder="No limit" min="0">
+                                <span class="dc-input-unit">₹</span>
+                            </div>
                         </div>
                     </div>
-                    
+
+                    <div class="form-group">
+                        <label class="form-label">Minimum Order Value</label>
+                        <div class="dc-input-with-unit">
+                            <input type="number" class="form-input" id="minOrderInput" placeholder="No minimum" min="0">
+                            <span class="dc-input-unit">₹</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Limits & Expiry -->
+                <div class="dc-section">
+                    <div class="dc-section-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Limits & Expiry
+                    </div>
+
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Usage Limit</label>
-                            <input type="number" class="form-input" id="usageLimitInput" placeholder="e.g., 100" min="1">
-                            <p class="form-hint">Leave empty for unlimited</p>
+                            <div class="dc-input-with-unit">
+                                <input type="number" class="form-input" id="usageLimitInput" placeholder="Unlimited" min="1">
+                                <span class="dc-input-unit">uses</span>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Expiry Date</label>
                             <input type="datetime-local" class="form-input" id="expiryInput">
-                            <p class="form-hint">Leave empty for no expiry</p>
                         </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-checkbox">
+                </div>
+
+                <!-- Section: Visibility & Status -->
+                <div class="dc-section dc-section-last">
+                    <div class="dc-section-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        Visibility & Status
+                    </div>
+
+                    <div class="dc-toggle-row">
+                        <div class="dc-toggle-info">
+                            <div class="dc-toggle-label">Public Code</div>
+                            <div class="dc-toggle-desc">Visible at checkout</div>
+                        </div>
+                        <label class="dc-toggle">
                             <input type="checkbox" id="isPublicCheck">
-                            <span>Show to all customers at checkout</span>
+                            <span class="dc-toggle-slider"></span>
                         </label>
-                        <p class="form-hint" style="margin-left: 1.75rem;">Public codes will be visible to everyone in the cart</p>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-checkbox">
+
+                    <div class="dc-toggle-row">
+                        <div class="dc-toggle-info">
+                            <div class="dc-toggle-label">Active</div>
+                            <div class="dc-toggle-desc">Can be used by customers</div>
+                        </div>
+                        <label class="dc-toggle">
                             <input type="checkbox" id="isActiveCheck" checked>
-                            <span>Code is active</span>
+                            <span class="dc-toggle-slider"></span>
                         </label>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="saveCode()">Save Code</button>
-            </div>
+                </div>
+
+                <!-- Live Preview -->
+                <div class="dc-preview">
+                    <div class="dc-preview-label">Preview</div>
+                    <div class="dc-preview-card">
+                        <div class="dc-preview-code" id="previewCode">CODE</div>
+                        <div class="dc-preview-value" id="previewValue">—</div>
+                        <div class="dc-preview-details" id="previewDetails"></div>
+                    </div>
+                </div>
+            </form>
         </div>
-    </div>
+
+        <!-- Panel Footer -->
+        <div class="dc-panel-footer">
+            <button class="btn btn-cancel" id="dcPanelCancelBtn" type="button">Cancel</button>
+            <button class="btn btn-save" id="saveCodeBtn" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span id="saveCodeBtnText">Create Code</span>
+            </button>
+        </div>
+    </aside>
 
     <!-- Toast -->
     <div class="toast" id="toast">
@@ -866,23 +1330,40 @@
         function openCreateModal() {
             try {
                 editingCodeId = null;
-                const modalTitle = document.getElementById('modalTitle');
+                const panelTitle = document.getElementById('panelTitle');
+                const panelSubtitle = document.getElementById('panelSubtitle');
                 const codeForm = document.getElementById('codeForm');
                 const isActiveCheck = document.getElementById('isActiveCheck');
+                const isPublicCheck = document.getElementById('isPublicCheck');
                 const maxDiscountGroup = document.getElementById('maxDiscountGroup');
-                const codeModal = document.getElementById('codeModal');
+                const saveBtn = document.getElementById('saveCodeBtnText');
+                const typeSelect = document.getElementById('typeSelect');
                 
-                if (modalTitle) modalTitle.textContent = 'Create Discount Code';
+                if (panelTitle) panelTitle.textContent = 'Create Discount Code';
+                if (panelSubtitle) panelSubtitle.textContent = 'Set up a new coupon';
                 if (codeForm) codeForm.reset();
                 if (isActiveCheck) isActiveCheck.checked = true;
-                if (maxDiscountGroup) maxDiscountGroup.style.display = 'block';
-                if (codeModal) {
-                    codeModal.classList.add('show');
-                    codeModal.style.display = 'flex';
-                }
+                if (isPublicCheck) isPublicCheck.checked = false;
+                if (maxDiscountGroup) maxDiscountGroup.style.display = '';
+                if (saveBtn) saveBtn.textContent = 'Create Code';
+                if (typeSelect) typeSelect.value = 'percent';
+                
+                // Reset type switcher
+                setDiscountType('percent');
+                
+                // Reset preview
+                updatePreview();
+                updateDescCharCount();
+                
+                openPanel();
+                
+                // Focus the code input after panel slides in
+                setTimeout(() => {
+                    const codeInput = document.getElementById('codeInput');
+                    if (codeInput) codeInput.focus();
+                }, 350);
             } catch (error) {
-                console.error('Error opening modal:', error);
-                alert('Error opening modal: ' + error.message);
+                console.error('Error opening panel:', error);
             }
         }
 
@@ -891,7 +1372,9 @@
             if (!code) return;
 
             editingCodeId = id;
-            document.getElementById('modalTitle').textContent = 'Edit Discount Code';
+            document.getElementById('panelTitle').textContent = 'Edit Discount Code';
+            document.getElementById('panelSubtitle').textContent = `Editing ${code.code}`;
+            document.getElementById('saveCodeBtnText').textContent = 'Save Changes';
             document.getElementById('codeId').value = id;
             document.getElementById('codeInput').value = code.code;
             document.getElementById('descriptionInput').value = code.description || '';
@@ -910,27 +1393,124 @@
                 document.getElementById('expiryInput').value = '';
             }
 
-            toggleMaxDiscount();
-            const codeModal = document.getElementById('codeModal');
-            if (codeModal) {
-                codeModal.classList.add('show');
-                codeModal.style.display = 'flex';
-            }
+            setDiscountType(code.type);
+            updatePreview();
+            updateDescCharCount();
+            
+            openPanel();
         }
 
-        function closeModal() {
-            const codeModal = document.getElementById('codeModal');
-            if (codeModal) {
-                codeModal.classList.remove('show');
-                codeModal.style.display = 'none';
-            }
+        function openPanel() {
+            document.getElementById('dcPanel').classList.add('open');
+            document.getElementById('dcPanelBackdrop').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePanel() {
+            document.getElementById('dcPanel').classList.remove('open');
+            document.getElementById('dcPanelBackdrop').classList.remove('open');
+            document.body.style.overflow = '';
             editingCodeId = null;
+        }
+
+        function setDiscountType(type) {
+            document.getElementById('typeSelect').value = type;
+            document.querySelectorAll('.dc-type-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.type === type);
+            });
+            document.getElementById('valueUnit').textContent = type === 'percent' ? '%' : '₹';
+            document.getElementById('maxDiscountGroup').style.display = type === 'percent' ? '' : 'none';
+            updatePreview();
         }
 
         function toggleMaxDiscount() {
             const type = document.getElementById('typeSelect').value;
-            document.getElementById('maxDiscountGroup').style.display = type === 'percent' ? 'block' : 'none';
+            document.getElementById('maxDiscountGroup').style.display = type === 'percent' ? '' : 'none';
         }
+
+        function generateCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            const prefixes = ['FLOW', 'SAVE', 'GET', 'DEAL', 'OFF', 'YAY'];
+            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+            let suffix = '';
+            for (let i = 0; i < 4; i++) {
+                suffix += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('codeInput').value = prefix + suffix;
+            updatePreview();
+        }
+
+        function updateDescCharCount() {
+            const desc = document.getElementById('descriptionInput');
+            const counter = document.getElementById('descCharCount');
+            if (desc && counter) {
+                counter.textContent = desc.value.length;
+            }
+        }
+
+        function updatePreview() {
+            const code = document.getElementById('codeInput').value.trim().toUpperCase() || 'CODE';
+            const type = document.getElementById('typeSelect').value;
+            const value = parseFloat(document.getElementById('valueInput').value);
+            const maxDiscount = document.getElementById('maxDiscountInput').value;
+            const minOrder = document.getElementById('minOrderInput').value;
+            const usageLimit = document.getElementById('usageLimitInput').value;
+
+            document.getElementById('previewCode').textContent = code;
+            
+            if (!isNaN(value) && value > 0) {
+                if (type === 'percent') {
+                    let display = `${value}% off`;
+                    if (maxDiscount) display += ` (max ₹${maxDiscount})`;
+                    document.getElementById('previewValue').textContent = display;
+                } else {
+                    document.getElementById('previewValue').textContent = `₹${value} off`;
+                }
+            } else {
+                document.getElementById('previewValue').textContent = '—';
+            }
+
+            const details = [];
+            if (minOrder) details.push(`Min order: ₹${minOrder}`);
+            if (usageLimit) details.push(`Limit: ${usageLimit} uses`);
+            document.getElementById('previewDetails').textContent = details.join(' · ') || '';
+        }
+
+        // Attach live preview listeners & panel controls
+        document.addEventListener('DOMContentLoaded', () => {
+            ['codeInput', 'valueInput', 'maxDiscountInput', 'minOrderInput', 'usageLimitInput'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('input', updatePreview);
+            });
+            
+            const descInput = document.getElementById('descriptionInput');
+            if (descInput) {
+                descInput.addEventListener('input', updateDescCharCount);
+            }
+
+            // Type switcher buttons
+            document.querySelectorAll('.dc-type-btn').forEach(btn => {
+                btn.addEventListener('click', () => setDiscountType(btn.dataset.type));
+            });
+
+            // Generate code button
+            const genBtn = document.getElementById('generateCodeBtn');
+            if (genBtn) genBtn.addEventListener('click', generateCode);
+
+            // Save button
+            const saveBtn = document.getElementById('saveCodeBtn');
+            if (saveBtn) saveBtn.addEventListener('click', saveCode);
+
+            // Close panel: X button, Cancel button, backdrop click, Escape key
+            document.getElementById('dcPanelClose')?.addEventListener('click', closePanel);
+            document.getElementById('dcPanelCancelBtn')?.addEventListener('click', closePanel);
+            document.getElementById('dcPanelBackdrop')?.addEventListener('click', closePanel);
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && document.getElementById('dcPanel')?.classList.contains('open')) {
+                    closePanel();
+                }
+            });
+        });
 
         async function saveCode() {
             const code = document.getElementById('codeInput').value.trim();
@@ -941,6 +1521,12 @@
                 showToast('Please fill in all required fields', 'error');
                 return;
             }
+
+            // Disable save button while saving
+            const saveBtn = document.getElementById('saveCodeBtn');
+            const saveBtnText = document.getElementById('saveCodeBtnText');
+            if (saveBtn) saveBtn.disabled = true;
+            if (saveBtnText) saveBtnText.textContent = 'Saving...';
 
             const payload = {
                 code,
@@ -973,7 +1559,7 @@
                 const data = await response.json();
                 if (data.success) {
                     showToast(editingCodeId ? 'Discount code updated' : 'Discount code created', 'success');
-                    closeModal();
+                    closePanel();
                     loadDiscountCodes();
                 } else {
                     showToast(data.message || 'Failed to save discount code', 'error');
@@ -981,6 +1567,11 @@
             } catch (error) {
                 console.error('Error saving discount code:', error);
                 showToast('Failed to save discount code', 'error');
+            } finally {
+                const saveBtn = document.getElementById('saveCodeBtn');
+                const saveBtnText = document.getElementById('saveCodeBtnText');
+                if (saveBtn) saveBtn.disabled = false;
+                if (saveBtnText) saveBtnText.textContent = editingCodeId ? 'Save Changes' : 'Create Code';
             }
         }
 

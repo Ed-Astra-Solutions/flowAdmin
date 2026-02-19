@@ -196,7 +196,7 @@ function renderProductsTable() {
     if (products.length === 0) {
         elements.productsTableBody.innerHTML = `
             <tr>
-                <td colspan="6">
+                <td colspan="7">
                     <div class="empty-state">
                         <div class="empty-icon">
                             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -223,6 +223,7 @@ function renderProductsTable() {
         const flavourNames = (product.flavours || []).map(f => typeof f === 'object' ? f.name : f);
         const mediaCount = (product.media || []).length;
         const firstMedia = product.media && product.media[0];
+        const categoryLabel = (product.category || 'hydration').charAt(0).toUpperCase() + (product.category || 'hydration').slice(1);
         
         return `
         <tr data-id="${product._id}">
@@ -241,6 +242,9 @@ function renderProductsTable() {
                         <span>${product.slug}</span>
                     </div>
                 </div>
+            </td>
+            <td>
+                <span class="category-badge category-${product.category || 'hydration'}">${categoryLabel}</span>
             </td>
             <td>
                 <button class="btn btn-secondary btn-sm media-count ${mediaCount > 0 ? 'has-media' : ''}" onclick="openMediaModal('${product._id}')" title="Manage media">
@@ -333,10 +337,23 @@ function populateProductForm(product) {
     document.getElementById('productDesc').value = product.description || '';
     document.getElementById('productActive').checked = product.isActive;
     document.getElementById('productFeatured').checked = product.isFeatured;
+    
+    // Category
+    const categorySelect = document.getElementById('productCategory');
+    if (categorySelect) {
+        categorySelect.value = product.category || 'hydration';
+    }
+    
+    // Tagline
+    const taglineInput = document.getElementById('productTagline');
+    if (taglineInput) {
+        taglineInput.value = product.tagline || '';
+    }
 
-    // Flavours
+    // Flavours - handle both string array and object array formats
+    const flavourNames = (product.flavours || []).map(f => typeof f === 'object' ? f.name : f);
     document.querySelectorAll('input[name="flavours"]').forEach(checkbox => {
-        checkbox.checked = product.flavours.includes(checkbox.value);
+        checkbox.checked = flavourNames.includes(checkbox.value);
     });
 
     // Pack sizes
@@ -350,8 +367,9 @@ function populateProductForm(product) {
         addPackSizeRow();
     }
 
-    // Ingredients
-    document.getElementById('productIngredients').value = (product.ingredients || []).join(', ');
+    // Ingredients - handle both string array and object array formats
+    const ingredientValues = (product.ingredients || []).map(i => typeof i === 'object' ? i.name : i);
+    document.getElementById('productIngredients').value = ingredientValues.join(', ');
 
     // Highlights
     document.getElementById('productHighlights').value = (product.highlights || []).join('\n');
@@ -416,21 +434,32 @@ function getFormData() {
         size: item.querySelector('.pack-size').value,
         sachets: parseInt(item.querySelector('.pack-sachets').value) || 0,
         price: parseFloat(item.querySelector('.pack-price').value) || 0,
-        originalPrice: parseFloat(item.querySelector('.pack-original-price').value) || 0,
-        savings: item.querySelector('.pack-savings').value || ''
+        originalPrice: parseFloat(item.querySelector('.pack-original-price').value) || null,
+        savings: item.querySelector('.pack-savings').value || '',
+        inStock: true
     })).filter(p => p.size && p.price > 0);
 
-    // Get ingredients
+    // Get ingredients (as string array)
     const ingredientsStr = document.getElementById('productIngredients').value;
     const ingredients = ingredientsStr.split(',').map(i => i.trim()).filter(i => i);
 
     // Get highlights
     const highlightsStr = document.getElementById('productHighlights').value;
     const highlights = highlightsStr.split('\n').map(h => h.trim()).filter(h => h);
+    
+    // Get category
+    const categorySelect = document.getElementById('productCategory');
+    const category = categorySelect ? categorySelect.value : 'hydration';
+    
+    // Get tagline
+    const taglineInput = document.getElementById('productTagline');
+    const tagline = taglineInput ? taglineInput.value.trim() : '';
 
     return {
         name: document.getElementById('productName').value.trim(),
         slug: document.getElementById('productSlug').value.trim(),
+        category,
+        tagline,
         shortDescription: document.getElementById('productShortDesc').value.trim(),
         description: document.getElementById('productDesc').value.trim(),
         flavours,

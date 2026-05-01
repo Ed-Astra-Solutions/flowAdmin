@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mailer - Flow Admin Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">F</div>
+                    <span class="logo-text">Flow</span>
+                    <span class="logo-badge">Admin</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="index.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                        Dashboard
+                    </a>
+                    <a href="products.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                        Products
+                    </a>
+                    <a href="orders.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                        Orders
+                    </a>
+                    <a href="customers.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                        Customers
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Marketing</div>
+                    <a href="discount-codes.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                        Discount Codes
+                    </a>
+                    <a href="mailer.html" class="nav-item active">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        Mailer
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Content</div>
+                    <a href="website-controls.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                        Website Controls
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Settings</div>
+                    <a href="admins.html" class="nav-item" id="adminsNavItem" style="display: none;">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
+                        Manage Admins
+                    </a>
+                    <a href="#" class="nav-item" onclick="logout(); return false;">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Logout
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">Admin</div>
+                        <div class="user-role" id="userRole">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="main-content">
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    </button>
+                    <div>
+                        <h1 class="page-title">Mailer</h1>
+                        <div class="breadcrumb"><span>Send branded emails to customers and mailing lists</span></div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <span id="smtpStatus" class="badge badge-warning">Checking SMTP…</span>
+                </div>
+            </header>
+
+            <!-- Tabs -->
+            <div class="mailer-tabs">
+                <button class="mailer-tab active" data-tab="compose">Compose</button>
+                <button class="mailer-tab" data-tab="lists">Mailing Lists</button>
+                <button class="mailer-tab" data-tab="history">History</button>
+            </div>
+
+            <!-- COMPOSE -->
+            <section class="tab-pane active" id="tab-compose">
+                <div class="compose-grid">
+                    <!-- Left: composer -->
+                    <div class="card">
+                        <div class="card-header"><h3 class="card-title">New email</h3></div>
+                        <div style="padding: 20px;">
+                            <div class="form-group">
+                                <label class="form-label">Subject *</label>
+                                <input type="text" class="form-input" id="emSubject" placeholder="e.g. Find Your Flow — 20% off this week" />
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Headline (optional)</label>
+                                    <input type="text" class="form-input" id="emHeadline" placeholder="Defaults to subject" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Preheader (preview text)</label>
+                                    <input type="text" class="form-input" id="emPreheader" placeholder="Short teaser shown in inbox previews" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Body (HTML supported) *</label>
+                                <textarea class="form-textarea" id="emBody" rows="10" placeholder="<p>Hi there,</p>&#10;&#10;<p>We just dropped a new flavour. Tap the button below to taste it.</p>"></textarea>
+                                <div style="font-size:12px;color:var(--text-muted);margin-top:6px;">Tip: paste HTML or write paragraphs separated by blank lines. Brand wrapper is added automatically.</div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">CTA label (optional)</label>
+                                    <input type="text" class="form-input" id="emCtaLabel" placeholder="Shop now" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">CTA URL</label>
+                                    <input type="url" class="form-input" id="emCtaUrl" placeholder="https://flowhydration.in/shop" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Reply-to (optional)</label>
+                                <input type="email" class="form-input" id="emReplyTo" placeholder="hello@flowhydration.in" />
+                            </div>
+
+                            <div class="composer-actions">
+                                <button class="btn btn-secondary" onclick="previewEmail()">Preview</button>
+                                <button class="btn btn-secondary" onclick="sendEmail(true)">Send test (1st recipient)</button>
+                                <button class="btn btn-primary" onclick="sendEmail(false)">Send to all</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: recipients -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recipients</h3>
+                            <span class="badge badge-info" id="recipientCount">0 selected</span>
+                        </div>
+                        <div style="padding: 16px 20px 4px;">
+                            <div class="recipient-tabs">
+                                <button class="rcp-tab active" data-rcp="customers">Customers</button>
+                                <button class="rcp-tab" data-rcp="lists">Lists</button>
+                                <button class="rcp-tab" data-rcp="manual">Manual</button>
+                            </div>
+                        </div>
+                        <div class="rcp-pane active" id="rcp-customers">
+                            <div class="rcp-search">
+                                <input type="text" class="form-input" id="custSearch" placeholder="Search customers by name, email, or mobile…" />
+                                <label class="rcp-checkall"><input type="checkbox" id="custSelectAll" /> Select all visible</label>
+                            </div>
+                            <div class="rcp-list" id="customersList"><div class="rcp-empty">Loading customers…</div></div>
+                        </div>
+                        <div class="rcp-pane" id="rcp-lists">
+                            <div class="rcp-list" id="listsPicker"><div class="rcp-empty">Loading lists…</div></div>
+                        </div>
+                        <div class="rcp-pane" id="rcp-manual">
+                            <div style="padding: 12px 16px;">
+                                <textarea class="form-textarea" id="manualEmails" rows="6" placeholder="One email per line, or comma separated.&#10;name@example.com&#10;Friend &lt;friend@example.com&gt;"></textarea>
+                                <div style="font-size:12px;color:var(--text-muted);margin-top:6px;">Format: <code>email@domain.com</code> or <code>Name &lt;email@domain.com&gt;</code>.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LISTS -->
+            <section class="tab-pane" id="tab-lists">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Mailing lists</h3>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="openListModal()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                New list
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>Name</th><th>Description</th><th>Contacts</th><th>Updated</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody id="listsTableBody">
+                                <tr><td colspan="5" style="text-align:center;padding:40px;"><div class="loading-spinner"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- HISTORY -->
+            <section class="tab-pane" id="tab-history">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Email history</h3>
+                        <div class="card-actions">
+                            <button class="btn btn-secondary" onclick="loadHistory()">Refresh</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>Sent</th><th>Subject</th><th>Recipients</th><th>Status</th><th>Sent by</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <tr><td colspan="6" style="text-align:center;padding:40px;"><div class="loading-spinner"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- List editor modal -->
+    <div class="modal-overlay" id="listModal">
+        <div class="modal" style="max-width: 640px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="listModalTitle">New mailing list</h3>
+                <button class="modal-close" onclick="closeModal('listModal')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Name *</label>
+                    <input type="text" class="form-input" id="listName" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <input type="text" class="form-input" id="listDesc" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contacts</label>
+                    <textarea class="form-textarea" id="listContacts" rows="8" placeholder="One per line:&#10;Name &lt;email@domain.com&gt;&#10;email@domain.com"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('listModal')">Cancel</button>
+                <button class="btn btn-primary" id="listSaveBtn" onclick="saveList()">Save list</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview / history detail modal -->
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal" style="max-width: 760px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="previewTitle">Preview</h3>
+                <button class="modal-close" onclick="closeModal('previewModal')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body" id="previewBody" style="padding:0;background:#f4f1ea;">
+                <iframe id="previewFrame" style="width:100%;height:520px;border:0;background:#f4f1ea;"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('previewModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <style>
+        /* ── Tabs ─────────────────────────── */
+        .mailer-tabs { display:flex; gap:4px; border-bottom:1px solid var(--border); margin-bottom:24px; }
+        .mailer-tab { background:transparent; border:none; padding:12px 20px; color:var(--text-muted); font-weight:500; cursor:pointer; border-bottom:2px solid transparent; transition:all .2s; font-size:14px; }
+        .mailer-tab:hover { color:var(--text-primary); }
+        .mailer-tab.active { color:var(--primary); border-bottom-color:var(--primary); }
+        .tab-pane { display:none; }
+        .tab-pane.active { display:block; }
+
+        /* ── Compose grid ─────────────────── */
+        .compose-grid { display:grid; grid-template-columns: 1.2fr 1fr; gap:20px; align-items:start; }
+        @media (max-width: 1100px) { .compose-grid { grid-template-columns: 1fr; } }
+
+        .composer-actions { display:flex; gap:10px; flex-wrap:wrap; padding-top:12px; border-top:1px solid var(--border); margin-top:12px; }
+        .composer-actions .btn-primary { margin-left:auto; }
+
+        /* ── Recipients ───────────────────── */
+        .recipient-tabs { display:flex; gap:4px; }
+        .rcp-tab { background:transparent; border:1px solid var(--border); padding:8px 14px; color:var(--text-muted); border-radius:8px; cursor:pointer; font-size:13px; font-weight:500; transition:all .2s; }
+        .rcp-tab.active { background: rgba(0,212,255,0.1); color:var(--primary); border-color:var(--primary); }
+        .rcp-pane { display:none; }
+        .rcp-pane.active { display:block; }
+        .rcp-search { display:flex; gap:12px; align-items:center; padding:12px 16px; flex-wrap:wrap; }
+        .rcp-search .form-input { flex:1; min-width:200px; }
+        .rcp-checkall { font-size:12px; color:var(--text-muted); display:flex; align-items:center; gap:6px; cursor:pointer; }
+        .rcp-list { max-height:380px; overflow-y:auto; border-top:1px solid var(--border); }
+        .rcp-row { display:flex; align-items:center; gap:12px; padding:10px 16px; border-bottom:1px solid var(--border); cursor:pointer; transition:background .15s; }
+        .rcp-row:hover { background: var(--bg-secondary); }
+        .rcp-row.selected { background: rgba(0,212,255,0.08); }
+        .rcp-row input[type="checkbox"] { width:16px; height:16px; accent-color: var(--primary); }
+        .rcp-row .rcp-name { font-weight:500; color:var(--text-primary); font-size:14px; }
+        .rcp-row .rcp-email { color:var(--text-muted); font-size:12px; }
+        .rcp-row .rcp-meta { margin-left:auto; font-size:11px; color:var(--text-muted); }
+        .rcp-empty { padding:32px 16px; text-align:center; color:var(--text-muted); font-size:13px; }
+
+        /* ── Misc ─────────────────────────── */
+        .badge { padding:4px 10px; border-radius:999px; font-size:11px; font-weight:500; }
+        .badge-info { background:rgba(0,212,255,0.15); color:var(--primary); }
+        .badge-success { background:rgba(34,197,94,0.15); color:#22c55e; }
+        .badge-warning { background:rgba(245,158,11,0.15); color:#f59e0b; }
+        .badge-danger { background:rgba(239,68,68,0.15); color:#ef4444; }
+        .loading-spinner { width:32px; height:32px; border:3px solid var(--border); border-top-color:var(--primary); border-radius:50%; animation:spin 1s linear infinite; margin:0 auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+
+    <script src="assets/js/config.js?v=2"></script>
+    <script src="assets/js/admin.js"></script>
+    <script>
+        const MAILER_API = `${AUTH_API}/mailer`;
+
+        // State ----------------------------------------------------------------
+        const state = {
+            customers: [],
+            lists: [],
+            selectedCustomers: new Set(), // _id
+            selectedLists: new Set(),     // _id
+            customerSearch: '',
+            history: [],
+            editingListId: null
+        };
+
+        async function initializeApp() {
+            const isAuthed = await checkAuth();
+            if (!isAuthed) return;
+            checkSmtpStatus();
+            wireTabs();
+            wireRecipientTabs();
+            wireCustomerSearch();
+            await Promise.all([loadCustomers(), loadLists()]);
+            loadHistory();
+        }
+
+        // SMTP status ----------------------------------------------------------
+        async function checkSmtpStatus() {
+            const el = document.getElementById('smtpStatus');
+            try {
+                const r = await fetch(`${MAILER_API}/status`, { headers: getAuthHeaders() });
+                const d = await r.json();
+                if (d.success && d.data.configured) {
+                    el.textContent = `SMTP: ${d.data.from.email}`;
+                    el.className = 'badge badge-success';
+                } else {
+                    el.textContent = 'SMTP not configured';
+                    el.className = 'badge badge-warning';
+                }
+            } catch {
+                el.textContent = 'SMTP check failed';
+                el.className = 'badge badge-danger';
+            }
+        }
+
+        // Tabs -----------------------------------------------------------------
+        function wireTabs() {
+            document.querySelectorAll('.mailer-tab').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.mailer-tab').forEach(b => b.classList.toggle('active', b === btn));
+                    document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('active', p.id === `tab-${btn.dataset.tab}`));
+                    if (btn.dataset.tab === 'history') loadHistory();
+                    if (btn.dataset.tab === 'lists') renderListsTable();
+                });
+            });
+        }
+
+        function wireRecipientTabs() {
+            document.querySelectorAll('.rcp-tab').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.rcp-tab').forEach(b => b.classList.toggle('active', b === btn));
+                    document.querySelectorAll('.rcp-pane').forEach(p => p.classList.toggle('active', p.id === `rcp-${btn.dataset.rcp}`));
+                });
+            });
+        }
+
+        // Customers ------------------------------------------------------------
+        async function loadCustomers() {
+            try {
+                const r = await fetch(`${MAILER_API}/customers`, { headers: getAuthHeaders() });
+                const d = await r.json();
+                state.customers = (d.data && d.data.customers) || [];
+                renderCustomers();
+            } catch (e) {
+                document.getElementById('customersList').innerHTML = `<div class="rcp-empty">Failed to load customers</div>`;
+            }
+        }
+
+        function wireCustomerSearch() {
+            const input = document.getElementById('custSearch');
+            let t;
+            input.addEventListener('input', e => {
+                clearTimeout(t);
+                t = setTimeout(() => { state.customerSearch = e.target.value.toLowerCase(); renderCustomers(); }, 200);
+            });
+            document.getElementById('custSelectAll').addEventListener('change', e => {
+                const visible = filteredCustomers();
+                visible.forEach(c => {
+                    if (e.target.checked) state.selectedCustomers.add(c._id);
+                    else state.selectedCustomers.delete(c._id);
+                });
+                renderCustomers();
+            });
+        }
+
+        function filteredCustomers() {
+            const q = state.customerSearch;
+            if (!q) return state.customers;
+            return state.customers.filter(c =>
+                (c.name || '').toLowerCase().includes(q) ||
+                (c.email || '').toLowerCase().includes(q) ||
+                (c.mobile || '').includes(q)
+            );
+        }
+
+        function renderCustomers() {
+            const list = filteredCustomers();
+            const box = document.getElementById('customersList');
+            if (!list.length) { box.innerHTML = `<div class="rcp-empty">No customers with email found</div>`; updateRecipientCount(); return; }
+            box.innerHTML = list.map(c => {
+                const sel = state.selectedCustomers.has(c._id) ? 'selected' : '';
+                const checked = state.selectedCustomers.has(c._id) ? 'checked' : '';
+                const init = (c.name || c.email || '?').charAt(0).toUpperCase();
+                return `
+                <label class="rcp-row ${sel}" data-id="${c._id}">
+                    <input type="checkbox" ${checked} onchange="toggleCustomer('${c._id}')">
+                    <div class="customer-avatar" style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#00ff88);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;color:#000;">${init}</div>
+                    <div>
+                        <div class="rcp-name">${escapeHtml(c.name || 'Unknown')}</div>
+                        <div class="rcp-email">${escapeHtml(c.email)}</div>
+                    </div>
+                    <div class="rcp-meta">+91 ${escapeHtml(c.mobile || '')}</div>
+                </label>`;
+            }).join('');
+            updateRecipientCount();
+        }
+
+        function toggleCustomer(id) {
+            if (state.selectedCustomers.has(id)) state.selectedCustomers.delete(id);
+            else state.selectedCustomers.add(id);
+            renderCustomers();
+        }
+
+        // Lists ----------------------------------------------------------------
+        async function loadLists() {
+            try {
+                const r = await fetch(`${MAILER_API}/lists`, { headers: getAuthHeaders() });
+                const d = await r.json();
+                state.lists = (d.data && d.data.lists) || [];
+                renderListsPicker();
+                renderListsTable();
+            } catch (e) {
+                document.getElementById('listsPicker').innerHTML = `<div class="rcp-empty">Failed to load lists</div>`;
+            }
+        }
+
+        function renderListsPicker() {
+            const box = document.getElementById('listsPicker');
+            if (!state.lists.length) { box.innerHTML = `<div class="rcp-empty">No mailing lists yet. Create one in the “Mailing Lists” tab.</div>`; updateRecipientCount(); return; }
+            box.innerHTML = state.lists.map(l => {
+                const checked = state.selectedLists.has(l._id) ? 'checked' : '';
+                const sel = state.selectedLists.has(l._id) ? 'selected' : '';
+                return `
+                <label class="rcp-row ${sel}" data-id="${l._id}">
+                    <input type="checkbox" ${checked} onchange="toggleList('${l._id}')">
+                    <div>
+                        <div class="rcp-name">${escapeHtml(l.name)}</div>
+                        <div class="rcp-email">${escapeHtml(l.description || '')}</div>
+                    </div>
+                    <div class="rcp-meta">${l.contactCount || 0} contacts</div>
+                </label>`;
+            }).join('');
+            updateRecipientCount();
+        }
+
+        function toggleList(id) {
+            if (state.selectedLists.has(id)) state.selectedLists.delete(id);
+            else state.selectedLists.add(id);
+            renderListsPicker();
+        }
+
+        function renderListsTable() {
+            const tbody = document.getElementById('listsTableBody');
+            if (!state.lists.length) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted);">No mailing lists yet</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = state.lists.map(l => `
+                <tr>
+                    <td><strong>${escapeHtml(l.name)}</strong></td>
+                    <td style="color:var(--text-muted);">${escapeHtml(l.description || '—')}</td>
+                    <td><span class="badge badge-info">${l.contactCount || 0}</span></td>
+                    <td style="color:var(--text-muted);">${new Date(l.updatedAt).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric'})}</td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary" onclick="editList('${l._id}')">Edit</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteList('${l._id}', '${escapeHtml(l.name).replace(/'/g, "\\'")}')">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openListModal() {
+            state.editingListId = null;
+            document.getElementById('listModalTitle').textContent = 'New mailing list';
+            document.getElementById('listName').value = '';
+            document.getElementById('listDesc').value = '';
+            document.getElementById('listContacts').value = '';
+            openModal('listModal');
+        }
+
+        function editList(id) {
+            const list = state.lists.find(l => l._id === id);
+            if (!list) return;
+            state.editingListId = id;
+            document.getElementById('listModalTitle').textContent = `Edit "${list.name}"`;
+            document.getElementById('listName').value = list.name;
+            document.getElementById('listDesc').value = list.description || '';
+            document.getElementById('listContacts').value = (list.contacts || [])
+                .map(c => c.name ? `${c.name} <${c.email}>` : c.email).join('\n');
+            openModal('listModal');
+        }
+
+        async function saveList() {
+            const name = document.getElementById('listName').value.trim();
+            const description = document.getElementById('listDesc').value.trim();
+            const contacts = parseRecipients(document.getElementById('listContacts').value);
+            if (!name) return showToast('Name is required', 'error');
+
+            const url = state.editingListId ? `${MAILER_API}/lists/${state.editingListId}` : `${MAILER_API}/lists`;
+            const method = state.editingListId ? 'PUT' : 'POST';
+            try {
+                const r = await fetch(url, { method, headers: { ...getAuthHeaders(), 'Content-Type':'application/json' }, body: JSON.stringify({ name, description, contacts }) });
+                const d = await r.json();
+                if (!d.success) throw new Error(d.error || 'Failed');
+                showToast(state.editingListId ? 'List updated' : 'List created', 'success');
+                closeModal('listModal');
+                loadLists();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function deleteList(id, name) {
+            if (!confirm(`Delete list "${name}"? This cannot be undone.`)) return;
+            try {
+                const r = await fetch(`${MAILER_API}/lists/${id}`, { method:'DELETE', headers: getAuthHeaders() });
+                const d = await r.json();
+                if (!d.success) throw new Error(d.error || 'Failed');
+                showToast('List deleted', 'success');
+                state.selectedLists.delete(id);
+                loadLists();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        // Recipients util ------------------------------------------------------
+        function parseRecipients(raw) {
+            if (!raw) return [];
+            return raw.split(/[,;\n]/).map(s => s.trim()).filter(Boolean).map(line => {
+                // formats: "Name <email>", "email"
+                const m = line.match(/^(.*?)<\s*([^>\s]+@[^>\s]+)\s*>$/);
+                if (m) return { name: m[1].trim().replace(/^"|"$/g,''), email: m[2].trim() };
+                return { name: '', email: line };
+            }).filter(r => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email));
+        }
+
+        function getManualRecipients() { return parseRecipients(document.getElementById('manualEmails').value); }
+
+        function updateRecipientCount() {
+            const count = state.selectedCustomers.size + state.selectedLists.size + getManualRecipients().length;
+            document.getElementById('recipientCount').textContent = `${count} selected`;
+        }
+
+        document.addEventListener('input', e => { if (e.target && e.target.id === 'manualEmails') updateRecipientCount(); });
+
+        // Send / preview -------------------------------------------------------
+        function buildPayload() {
+            return {
+                subject: document.getElementById('emSubject').value.trim(),
+                headline: document.getElementById('emHeadline').value.trim() || undefined,
+                preheader: document.getElementById('emPreheader').value.trim(),
+                body: document.getElementById('emBody').value,
+                ctaLabel: document.getElementById('emCtaLabel').value.trim() || undefined,
+                ctaUrl: document.getElementById('emCtaUrl').value.trim() || undefined,
+                replyTo: document.getElementById('emReplyTo').value.trim() || undefined,
+                customerIds: Array.from(state.selectedCustomers),
+                listIds: Array.from(state.selectedLists),
+                manualRecipients: getManualRecipients()
+            };
+        }
+
+        function previewEmail() {
+            const p = buildPayload();
+            if (!p.subject || !p.body) return showToast('Subject and body are required', 'error');
+            const html = renderPreviewHtml(p);
+            const f = document.getElementById('previewFrame');
+            f.srcdoc = html;
+            document.getElementById('previewTitle').textContent = `Preview: ${p.subject}`;
+            openModal('previewModal');
+        }
+
+        function renderPreviewHtml(p) {
+            // Mirror server template (simplified). Server is the source of truth for actual sends.
+            const cta = p.ctaLabel && p.ctaUrl
+                ? `<tr><td align="left" style="padding:8px 40px 32px 40px;"><a href="${p.ctaUrl}" style="display:inline-block;background:#0033ff;color:#fff;text-decoration:none;font-family:Inter,Arial,sans-serif;font-weight:600;font-size:14px;padding:14px 26px;border-radius:999px;">${escapeHtml(p.ctaLabel)} →</a></td></tr>`
+                : '';
+            return `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#f4f1ea;font-family:Inter,Arial,sans-serif;color:#0a0a0a;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px;">
+              <table role="presentation" width="600" style="max-width:600px;width:100%;background:#fff;border:1px solid #e7e3da;border-radius:20px;overflow:hidden;">
+                <tr><td style="padding:28px 40px;border-bottom:1px solid #efece4;"><span style="font-family:Georgia,serif;font-size:22px;font-weight:600;">Flow<span style="color:#0033ff;">.</span></span></td></tr>
+                <tr><td style="padding:48px 40px 8px;"><div style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#0033ff;margin-bottom:16px;">— Flow Hydration</div><h1 style="margin:0;font-family:Georgia,serif;font-size:34px;line-height:1.15;font-weight:400;letter-spacing:-0.02em;">${escapeHtml(p.headline || p.subject)}</h1></td></tr>
+                <tr><td style="padding:24px 40px 8px;font-size:15px;line-height:1.7;color:#2a2a2a;">${p.body}</td></tr>
+                ${cta}
+                <tr><td style="padding:24px 40px 36px;font-size:12px;color:#8a8a8a;">You received this because you opted in to updates from Flow Hydration.<br/>Flow Hydration · India · <a href="https://flowhydration.in" style="color:#0033ff;text-decoration:none;">flowhydration.in</a></td></tr>
+              </table>
+            </td></tr></table></body></html>`;
+        }
+
+        async function sendEmail(testMode) {
+            const payload = buildPayload();
+            if (!payload.subject) return showToast('Subject is required', 'error');
+            if (!payload.body || !payload.body.trim()) return showToast('Body is required', 'error');
+            const totalRecipients = payload.customerIds.length + payload.listIds.length + payload.manualRecipients.length;
+            if (!totalRecipients) return showToast('Select at least one recipient', 'error');
+
+            const label = testMode ? 'test send' : `send to ${totalRecipients} recipient group(s)`;
+            if (!confirm(`Confirm ${label}?`)) return;
+
+            payload.testMode = !!testMode;
+            try {
+                const r = await fetch(`${MAILER_API}/send`, {
+                    method: 'POST',
+                    headers: { ...getAuthHeaders(), 'Content-Type':'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const d = await r.json();
+                if (!d.success) throw new Error(d.error || 'Send failed');
+                showToast(`Sent ${d.data.sentCount}/${d.data.totalRecipients} • ${d.data.failedCount} failed`, d.data.failedCount ? 'warning' : 'success');
+                loadHistory();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        // History --------------------------------------------------------------
+        async function loadHistory() {
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;"><div class="loading-spinner"></div></td></tr>`;
+            try {
+                const r = await fetch(`${MAILER_API}/history?limit=50`, { headers: getAuthHeaders() });
+                const d = await r.json();
+                state.history = (d.data && d.data.items) || [];
+                renderHistory();
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted);">Failed to load history</td></tr>`;
+            }
+        }
+
+        function renderHistory() {
+            const tbody = document.getElementById('historyTableBody');
+            if (!state.history.length) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted);">No emails sent yet</td></tr>`;
+                return;
+            }
+            const statusBadge = s => {
+                const map = { sent:'badge-success', partial:'badge-warning', failed:'badge-danger', sending:'badge-info', queued:'badge-info', draft:'badge-warning' };
+                return `<span class="badge ${map[s] || 'badge-info'}">${s}</span>`;
+            };
+            tbody.innerHTML = state.history.map(h => `
+                <tr>
+                    <td style="white-space:nowrap;">${new Date(h.createdAt).toLocaleString('en-IN', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })}</td>
+                    <td><strong>${escapeHtml(h.subject)}</strong></td>
+                    <td>${h.sentCount}/${h.totalRecipients}${h.failedCount ? ` <span class="badge badge-danger" style="margin-left:6px;">${h.failedCount} failed</span>` : ''}</td>
+                    <td>${statusBadge(h.status)}</td>
+                    <td style="color:var(--text-muted);">${escapeHtml(h.sentByName || '—')}</td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary" onclick="viewHistory('${h._id}')">View</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function viewHistory(id) {
+            try {
+                const r = await fetch(`${MAILER_API}/history/${id}`, { headers: getAuthHeaders() });
+                const d = await r.json();
+                if (!d.success) throw new Error(d.error);
+                const log = d.data.log;
+                document.getElementById('previewTitle').textContent = `${log.subject} — ${log.sentCount}/${log.totalRecipients} sent`;
+                const recipients = (log.recipients || []).map(r => {
+                    const color = r.status === 'sent' ? '#22c55e' : r.status === 'failed' ? '#ef4444' : '#f59e0b';
+                    return `<div style="font-size:12px;padding:4px 8px;border-bottom:1px solid #eee;"><span style="color:${color};">●</span> ${escapeHtml(r.email)} <span style="color:#999;">(${r.source}, ${r.status})</span>${r.error ? ` <span style="color:#ef4444;">— ${escapeHtml(r.error)}</span>` : ''}</div>`;
+                }).join('');
+                const html = `<!DOCTYPE html><html><body style="margin:0;font-family:Inter,Arial,sans-serif;background:#f7f7f7;">
+                    <div style="padding:16px;background:#fff;border-bottom:1px solid #eee;">
+                        <div style="font-size:12px;color:#666;margin-bottom:6px;">Recipients (${recipients ? log.recipients.length : 0})</div>
+                        <div style="max-height:140px;overflow-y:auto;">${recipients || '<div style="color:#999;font-size:12px;">No recipient log</div>'}</div>
+                    </div>
+                    <div style="padding:0;">${log.renderedHtml || log.body || ''}</div>
+                </body></html>`;
+                document.getElementById('previewFrame').srcdoc = html;
+                openModal('previewModal');
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        // util -----------------------------------------------------------------
+        function escapeHtml(str) { return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+    </script>
+</body>
+</html>

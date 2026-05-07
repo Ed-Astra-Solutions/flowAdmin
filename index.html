@@ -3,62 +3,372 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flow Admin Console</title>
+    <title>Dashboard - Flow Admin Console</title>
     <script>
-        // Check if logged in, redirect accordingly
-        const token = localStorage.getItem('adminToken');
-        if (!token) {
+        // Hard gate: bounce to login if not authenticated, before rendering
+        if (!localStorage.getItem('adminToken')) {
             window.location.href = '/admin/login.html';
-        } else {
-            window.location.href = '/admin/products.html';
         }
     </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <style>
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+        @media (max-width: 1100px) { .dash-grid { grid-template-columns: 1fr; } }
+
+        .chart-card { padding: 20px 22px; }
+        .chart-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .chart-meta { color: var(--text-muted); font-size: 12px; }
+        .chart-totals {
+            display: flex;
+            gap: 18px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+        .chart-total {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .chart-total strong {
+            display: block;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text);
+            margin-top: 2px;
+        }
+        .chart-toggle {
+            display: inline-flex;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .chart-toggle button {
+            background: transparent;
+            border: none;
+            padding: 6px 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .chart-toggle button.active {
+            background: rgba(0, 212, 255, 0.12);
+            color: var(--primary);
+        }
+        .chart-wrap {
+            position: relative;
+        }
+        .chart-svg {
+            width: 100%;
+            height: 220px;
+            display: block;
+            cursor: crosshair;
+        }
+        .chart-tooltip {
+            position: absolute;
+            pointer-events: none;
+            background: rgba(2, 8, 23, 0.95);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 12px;
+            color: var(--text);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            transform: translate(-50%, -100%);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.12s ease;
+            z-index: 5;
+        }
+        .chart-tooltip.visible { opacity: 1; }
+        .chart-tooltip .tt-date {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .chart-tooltip .tt-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            font-size: 13px;
+        }
+        .chart-tooltip .tt-row .tt-label {
+            color: var(--text-muted);
+        }
+        .chart-tooltip .tt-row .tt-value {
+            font-weight: 600;
+            color: var(--text);
+        }
+        .chart-tooltip .tt-row.dim .tt-value {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .chart-empty {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 60px 20px;
+            font-size: 13px;
+        }
+
+        .status-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            padding: 8px 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+        .status-row .label {
+            color: var(--text-muted);
+            text-transform: capitalize;
+        }
+        .status-row .value {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .dash-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .dash-list-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.15s;
+        }
+        .dash-list-row:hover { background: rgba(255,255,255,0.02); }
+        .dash-list-row .thumb {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        .dash-list-row .meta {
+            flex: 1;
+            min-width: 0;
+        }
+        .dash-list-row .meta .title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .dash-list-row .meta .sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .dash-list-row .stat {
+            text-align: right;
+            font-size: 12px;
+            color: var(--text);
+        }
+        .dash-list-row .stat strong {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .dash-empty {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 32px 16px;
+            font-size: 13px;
+        }
+
+        .stat-change.negative {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+        .stat-change.neutral {
+            background: rgba(148, 163, 184, 0.15);
+            color: var(--text-muted);
+        }
+        .stat-skel {
+            display: inline-block;
+            width: 80px;
+            height: 24px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--card-bg) 0%, rgba(255,255,255,0.05) 50%, var(--card-bg) 100%);
+            background-size: 200% 100%;
+            animation: skel 1.4s linear infinite;
+        }
+        @keyframes skel { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .quick-actions a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+        .quick-actions a:hover {
+            border-color: var(--primary);
+            background: rgba(0, 212, 255, 0.05);
+        }
+        .quick-actions a svg { color: var(--primary); flex-shrink: 0; }
+
+        .order-status-pill {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        .order-status-pill.delivered { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+        .order-status-pill.shipped { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+        .order-status-pill.processing { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+        .order-status-pill.confirmed { background: rgba(0, 212, 255, 0.15); color: var(--primary); }
+        .order-status-pill.pending { background: rgba(255, 193, 7, 0.15); color: #ffc107; }
+        .order-status-pill.cancelled { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+    </style>
 </head>
 <body>
-    <p>Redirecting...</p>
-</body>
-</html>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">F</div>
+                    <span class="logo-text">Flow</span>
+                    <span class="logo-badge">Admin</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="index.html" class="nav-item active">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                        </svg>
+                        Dashboard
+                    </a>
+                    <a href="products.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        </svg>
+                        Products
+                    </a>
+                    <a href="orders.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <path d="M16 10a4 4 0 01-8 0"/>
+                        </svg>
+                        Orders
+                    </a>
+                    <a href="customers.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
                             <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 00-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 010 7.75"/>
                         </svg>
                         Customers
                     </a>
                 </div>
-                
                 <div class="nav-section">
-                    <div class="nav-section-title">Analytics</div>
-                    <a href="#" class="nav-item">
+                    <div class="nav-section-title">Marketing</div>
+                    <a href="discount-codes.html" class="nav-item">
                         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="20" x2="12" y2="10"/>
-                            <line x1="18" y1="20" x2="18" y2="4"/>
-                            <line x1="6" y1="20" x2="6" y2="16"/>
+                            <path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/>
                         </svg>
-                        Reports
+                        Discount Codes
                     </a>
-                    <a href="#" class="nav-item">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="18" y1="20" x2="18" y2="10"/>
-                            <line x1="12" y1="20" x2="12" y2="4"/>
-                            <line x1="6" y1="20" x2="6" y2="14"/>
-                        </svg>
-                        Sales
+                    <a href="mailer.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        Mailer
                     </a>
                 </div>
-                
+                <div class="nav-section">
+                    <div class="nav-section-title">Content</div>
+                    <a href="website-controls.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="3" y1="9" x2="21" y2="9"/>
+                            <line x1="9" y1="21" x2="9" y2="9"/>
+                        </svg>
+                        Website Controls
+                    </a>
+                    <a href="blogs.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                        Blogs
+                    </a>
+                    <a href="sponsorship-events.html" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                        Sponsorship Events
+                    </a>
+                </div>
                 <div class="nav-section">
                     <div class="nav-section-title">Settings</div>
-                    <a href="#" class="nav-item">
+                    <a href="admins.html" class="nav-item" id="adminsNavItem" style="display: none;">
                         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="3"/>
-                            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+                            <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                            <circle cx="8.5" cy="7" r="4"/>
                         </svg>
-                        Settings
+                        Manage Admins
+                    </a>
+                    <a href="#" class="nav-item" onclick="logout(); return false;">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                        Logout
                     </a>
                 </div>
             </nav>
-            
             <div class="sidebar-footer">
                 <div class="user-info">
                     <div class="user-avatar">A</div>
@@ -70,9 +380,7 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Header -->
             <header class="admin-header">
                 <div class="header-left">
                     <button class="menu-toggle" id="menuToggle">
@@ -85,30 +393,24 @@
                     <div>
                         <h1 class="page-title">Dashboard</h1>
                         <div class="breadcrumb">
-                            <span>Welcome back, Admin</span>
+                            <span id="welcomeText">Welcome back</span>
                         </div>
                     </div>
                 </div>
                 <div class="header-right">
-                    <div class="search-box">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                        </svg>
-                        <input type="text" placeholder="Search...">
+                    <div class="chart-toggle" role="tablist" aria-label="Trend window">
+                        <button data-days="7">7d</button>
+                        <button data-days="30" class="active">30d</button>
+                        <button data-days="90">90d</button>
+                        <button data-days="180">6m</button>
+                        <button data-days="365">1y</button>
+                        <button data-days="all">All</button>
                     </div>
-                    <button class="header-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                            <path d="M13.73 21a2 2 0 01-3.46 0"/>
-                        </svg>
-                        <span class="notification-dot"></span>
-                    </button>
                 </div>
             </header>
 
-            <!-- Page Content -->
             <div class="page-content">
-                <!-- Stats Grid -->
+                <!-- Top stats -->
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-header">
@@ -117,15 +419,10 @@
                                     <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
                                 </svg>
                             </div>
-                            <span class="stat-change positive">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-                                </svg>
-                                +24%
-                            </span>
+                            <span class="stat-change neutral" id="revenueChange">—</span>
                         </div>
-                        <div class="stat-value">₹1,24,500</div>
-                        <div class="stat-label">Total Revenue</div>
+                        <div class="stat-value" id="totalRevenue"><span class="stat-skel"></span></div>
+                        <div class="stat-label" id="revenueLabel">Revenue (last 30d)</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-header">
@@ -136,15 +433,10 @@
                                     <path d="M16 10a4 4 0 01-8 0"/>
                                 </svg>
                             </div>
-                            <span class="stat-change positive">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-                                </svg>
-                                +18%
-                            </span>
+                            <span class="stat-change neutral" id="ordersChange">—</span>
                         </div>
-                        <div class="stat-value">156</div>
-                        <div class="stat-label">Total Orders</div>
+                        <div class="stat-value" id="totalOrders"><span class="stat-skel"></span></div>
+                        <div class="stat-label" id="ordersLabel">Orders (last 30d)</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-header">
@@ -152,18 +444,11 @@
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
                                     <circle cx="9" cy="7" r="4"/>
-                                    <path d="M23 21v-2a4 4 0 00-3-3.87"/>
-                                    <path d="M16 3.13a4 4 0 010 7.75"/>
                                 </svg>
                             </div>
-                            <span class="stat-change positive">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-                                </svg>
-                                +12%
-                            </span>
+                            <span class="stat-change neutral" id="customersBadge">—</span>
                         </div>
-                        <div class="stat-value">892</div>
+                        <div class="stat-value" id="totalCustomers"><span class="stat-skel"></span></div>
                         <div class="stat-label">Total Customers</div>
                     </div>
                     <div class="stat-card">
@@ -174,100 +459,146 @@
                                 </svg>
                             </div>
                         </div>
-                        <div class="stat-value" id="dashboardProducts">0</div>
-                        <div class="stat-label">Total Products</div>
+                        <div class="stat-value" id="totalProducts"><span class="stat-skel"></span></div>
+                        <div class="stat-label">Active Products</div>
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
-                <div class="card" style="margin-bottom: 24px;">
+                <!-- Quick actions -->
+                <div class="card" style="margin-top: 24px;">
                     <div class="card-header">
                         <h2 class="card-title">Quick Actions</h2>
                     </div>
                     <div class="card-body">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                            <a href="products.html" class="btn btn-secondary" style="justify-content: flex-start; gap: 12px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                                </svg>
+                        <div class="quick-actions">
+                            <a href="products.html">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                                 Manage Products
                             </a>
-                            <a href="#" class="btn btn-secondary" style="justify-content: flex-start; gap: 12px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-                                    <line x1="3" y1="6" x2="21" y2="6"/>
-                                    <path d="M16 10a4 4 0 01-8 0"/>
-                                </svg>
+                            <a href="orders.html">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
                                 View Orders
                             </a>
-                            <a href="#" class="btn btn-secondary" style="justify-content: flex-start; gap: 12px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                                    <circle cx="9" cy="7" r="4"/>
-                                </svg>
+                            <a href="customers.html">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
                                 View Customers
                             </a>
-                            <a href="#" class="btn btn-secondary" style="justify-content: flex-start; gap: 12px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="12" y1="20" x2="12" y2="10"/>
-                                    <line x1="18" y1="20" x2="18" y2="4"/>
-                                    <line x1="6" y1="20" x2="6" y2="16"/>
-                                </svg>
-                                View Reports
+                            <a href="discount-codes.html">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/></svg>
+                                Discount Codes
+                            </a>
+                            <a href="blogs.html">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                Blogs
+                            </a>
+                            <a href="sponsorship-events.html">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                Sponsorship Events
                             </a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Recent Orders</h2>
-                        <a href="#" class="btn btn-secondary btn-sm">View All</a>
+                <!-- Trend chart + order status -->
+                <div class="dash-grid">
+                    <div class="card chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <h2 class="card-title" style="margin: 0;">Revenue & Orders</h2>
+                                <div class="chart-meta" id="chartMeta">Loading…</div>
+                            </div>
+                            <div class="chart-toggle" role="tablist" aria-label="Metric">
+                                <button data-metric="revenue" class="active">Revenue</button>
+                                <button data-metric="orders">Orders</button>
+                            </div>
+                        </div>
+                        <div class="chart-totals" id="chartTotals"></div>
+                        <div class="chart-wrap">
+                            <svg class="chart-svg" id="chart" viewBox="0 0 600 220" preserveAspectRatio="none" aria-hidden="true"></svg>
+                            <div class="chart-tooltip" id="chartTooltip" role="status" aria-live="polite"></div>
+                        </div>
+                        <div class="chart-empty" id="chartEmpty" style="display:none;">No orders in this window yet.</div>
                     </div>
-                    <div class="card-body">
-                        <div class="table-container">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Order ID</th>
-                                        <th>Customer</th>
-                                        <th>Product</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>#FLOW-001</td>
-                                        <td>Rahul Sharma</td>
-                                        <td>Flow Original (30 Pack)</td>
-                                        <td>₹1,299</td>
-                                        <td><span class="status-badge active"><span class="status-dot"></span>Delivered</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>#FLOW-002</td>
-                                        <td>Priya Patel</td>
-                                        <td>Citrus Burst (15 Pack)</td>
-                                        <td>₹699</td>
-                                        <td><span class="status-badge pending"><span class="status-dot"></span>Shipping</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>#FLOW-003</td>
-                                        <td>Amit Kumar</td>
-                                        <td>Berry Blast (60 Pack)</td>
-                                        <td>₹2,399</td>
-                                        <td><span class="status-badge pending"><span class="status-dot"></span>Processing</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>#FLOW-004</td>
-                                        <td>Sneha Gupta</td>
-                                        <td>Tropical Surge (30 Pack)</td>
-                                        <td>₹1,299</td>
-                                        <td><span class="status-badge active"><span class="status-dot"></span>Delivered</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Order Status</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="status-summary" id="statusSummary">
+                                <div class="dash-empty">Loading…</div>
+                            </div>
+                            <div style="margin-top: 16px; padding: 12px; background: rgba(255, 193, 7, 0.08); border: 1px solid rgba(255, 193, 7, 0.2); border-radius: 8px; font-size: 13px;">
+                                <div style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Pending COD Collection</div>
+                                <div id="pendingCOD" style="font-weight: 600; font-size: 18px; margin-top: 4px;">—</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent orders + top products -->
+                <div class="dash-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Recent Orders</h2>
+                            <a href="orders.html" class="btn btn-secondary btn-sm">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Order #</th>
+                                            <th>Customer</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentOrdersBody">
+                                        <tr><td colspan="5"><div class="dash-empty">Loading…</div></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Top Products</h2>
+                            <span class="chart-meta" id="topProductsMeta"></span>
+                        </div>
+                        <div class="card-body">
+                            <div class="dash-list" id="topProductsList">
+                                <div class="dash-empty">Loading…</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Latest customers + content stats -->
+                <div class="dash-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Latest Customers</h2>
+                            <a href="customers.html" class="btn btn-secondary btn-sm">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="dash-list" id="latestCustomersList">
+                                <div class="dash-empty">Loading…</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Content</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="status-summary">
+                                <div class="status-row"><span class="label">Published Blogs</span><span class="value" id="contentBlogs">—</span></div>
+                                <div class="status-row"><span class="label">Published Events</span><span class="value" id="contentEvents">—</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -275,33 +606,418 @@
         </main>
     </div>
 
-    <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <script src="assets/js/config.js?v=2"></script>
+    <script src="assets/js/admin.js?v=2"></script>
     <script>
-        // Mobile menu toggle
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.querySelector('.sidebar');
-        if (menuToggle && sidebar) {
-            menuToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('open');
+        // ====== State ======
+        let dashState = { days: 30, metric: 'revenue', data: null };
+
+        // Cached chart geometry (reset on each render)
+        let chartGeom = null;
+
+        // ====== Init ======
+        document.addEventListener('DOMContentLoaded', async () => {
+            const ok = await checkAuth();
+            if (!ok) return;
+            const admin = getCurrentAdmin();
+            if (admin) {
+                document.getElementById('welcomeText').textContent = `Welcome back, ${admin.name || 'Admin'}`;
+            }
+
+            // Window toggles
+            document.querySelectorAll('.chart-toggle [data-days]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.chart-toggle [data-days]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const raw = btn.dataset.days;
+                    dashState.days = raw === 'all' ? 'all' : parseInt(raw);
+                    loadDashboard();
+                });
             });
+
+            // Chart hover wiring (delegates to current series via chartGeom)
+            const chartSvg = document.getElementById('chart');
+            chartSvg.addEventListener('mousemove', handleChartHover);
+            chartSvg.addEventListener('mouseleave', () => {
+                document.getElementById('chartTooltip').classList.remove('visible');
+                const dot = document.getElementById('chartHoverDot');
+                if (dot) dot.setAttribute('opacity', '0');
+                const line = document.getElementById('chartHoverLine');
+                if (line) line.setAttribute('opacity', '0');
+            });
+
+            // Metric toggles
+            document.querySelectorAll('.chart-toggle [data-metric]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.chart-toggle [data-metric]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    dashState.metric = btn.dataset.metric;
+                    if (dashState.data) renderChart();
+                });
+            });
+
+            window.addEventListener('resize', debounce(() => {
+                if (dashState.data) renderChart();
+            }, 150));
+
+            await loadDashboard();
+        });
+
+        function debounce(fn, ms) {
+            let t;
+            return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
         }
 
-        // Load product count
-        async function loadProductCount() {
+        // ====== Data ======
+        async function loadDashboard() {
             try {
-                const response = await fetch('/api/products');
-                if (response.ok) {
-                    const products = await response.json();
-                    document.getElementById('dashboardProducts').textContent = products.length;
+                const daysParam = dashState.days === 'all' ? 'all' : String(dashState.days);
+                const response = await fetch(`${AUTH_API}/dashboard?days=${daysParam}`, {
+                    headers: getAuthHeaders()
+                });
+                if (!response.ok) {
+                    if (response.status === 401) { logout(); return; }
+                    throw new Error('Failed to load dashboard');
                 }
-            } catch (error) {
-                console.error('Error loading products:', error);
+                const json = await response.json();
+                dashState.data = json.data;
+                renderAll();
+            } catch (err) {
+                console.error(err);
+                showToast('Failed to load dashboard', 'error');
             }
         }
 
-        loadProductCount();
+        // ====== Render ======
+        function renderAll() {
+            const d = dashState.data;
+            if (!d) return;
+
+            // Top stats
+            document.getElementById('totalRevenue').textContent = fmtINR(d.window_metrics.revenue);
+            document.getElementById('totalOrders').textContent = d.window_metrics.orders.toLocaleString();
+            document.getElementById('totalCustomers').textContent = d.totals.customers.toLocaleString();
+            document.getElementById('totalProducts').textContent = d.totals.products.toLocaleString();
+
+            const windowLabel = formatWindowLabel(d.window.days);
+            document.getElementById('revenueLabel').textContent = `Revenue (paid, ${windowLabel})`;
+            document.getElementById('ordersLabel').textContent = `Orders (${windowLabel})`;
+
+            renderChange('revenueChange', d.window_metrics.revenueChangePct);
+            renderChange('ordersChange', d.window_metrics.ordersChangePct);
+            const customersBadge = document.getElementById('customersBadge');
+            if (d.window_metrics.newCustomers > 0) {
+                customersBadge.className = 'stat-change positive';
+                customersBadge.textContent = `+${d.window_metrics.newCustomers} new`;
+            } else {
+                customersBadge.className = 'stat-change neutral';
+                customersBadge.textContent = 'no new';
+            }
+
+            // Pending COD
+            document.getElementById('pendingCOD').textContent = `${d.totals.pendingCOD} order${d.totals.pendingCOD === 1 ? '' : 's'}`;
+
+            // Order status
+            renderStatusSummary(d.ordersByStatus);
+
+            // Chart
+            renderChart();
+
+            // Recent orders
+            renderRecentOrders(d.recentOrders);
+
+            // Top products
+            renderTopProducts(d.topProducts, d.window.days);
+
+            // Latest customers
+            renderLatestCustomers(d.recentCustomers);
+
+            // Content
+            document.getElementById('contentBlogs').textContent = d.totals.publishedBlogs;
+            document.getElementById('contentEvents').textContent = d.totals.publishedEvents;
+        }
+
+        function renderChange(id, pct) {
+            const el = document.getElementById(id);
+            const rounded = Math.round(pct);
+            if (rounded > 0) {
+                el.className = 'stat-change positive';
+                el.textContent = `+${rounded}%`;
+            } else if (rounded < 0) {
+                el.className = 'stat-change negative';
+                el.textContent = `${rounded}%`;
+            } else {
+                el.className = 'stat-change neutral';
+                el.textContent = '0%';
+            }
+        }
+
+        function renderStatusSummary(map) {
+            const order = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
+            const container = document.getElementById('statusSummary');
+            const rows = order.map(s => {
+                const count = map[s] || 0;
+                return `<div class="status-row"><span class="label">${s}</span><span class="value">${count}</span></div>`;
+            });
+            container.innerHTML = rows.join('');
+        }
+
+        function renderChart() {
+            const series = dashState.data.series || [];
+            const metric = dashState.metric;
+            const bucket = dashState.data.window.bucket || 'day';
+            const empty = document.getElementById('chartEmpty');
+            const svg = document.getElementById('chart');
+            const totals = document.getElementById('chartTotals');
+
+            const sumRevenue = series.reduce((s, r) => s + (r.revenue || 0), 0);
+            const sumOrders = series.reduce((s, r) => s + (r.orders || 0), 0);
+            const bucketLabel = bucket === 'day' ? 'day' : (bucket === 'week' ? 'week' : 'month');
+            totals.innerHTML = `
+                <div class="chart-total">${metric === 'revenue' ? 'Total revenue' : 'Total orders'}<strong>${metric === 'revenue' ? fmtINR(sumRevenue) : sumOrders.toLocaleString()}</strong></div>
+                <div class="chart-total">Avg / ${bucketLabel}<strong>${metric === 'revenue' ? fmtINR(sumRevenue / Math.max(series.length, 1)) : Math.round(sumOrders / Math.max(series.length, 1))}</strong></div>
+            `;
+
+            const meta = document.getElementById('chartMeta');
+            if (series.length) {
+                meta.textContent = `${formatBucketLabel(series[0], bucket)} → ${formatBucketLabel(series[series.length - 1], bucket)} • ${bucketLabel}ly`;
+            }
+
+            if (!series.length || (metric === 'revenue' && sumRevenue === 0) || (metric === 'orders' && sumOrders === 0)) {
+                svg.innerHTML = '';
+                empty.style.display = 'block';
+                chartGeom = null;
+                return;
+            }
+            empty.style.display = 'none';
+
+            const width = 600;
+            const height = 220;
+            const padX = 8;
+            const padY = 18;
+            const innerW = width - padX * 2;
+            const innerH = height - padY * 2;
+
+            const values = series.map(r => metric === 'revenue' ? (r.revenue || 0) : (r.orders || 0));
+            const max = Math.max(1, ...values);
+            const stepX = series.length > 1 ? innerW / (series.length - 1) : innerW;
+
+            const points = series.map((r, i) => {
+                const x = padX + (series.length > 1 ? i * stepX : innerW / 2);
+                const v = metric === 'revenue' ? (r.revenue || 0) : (r.orders || 0);
+                const y = padY + innerH - (v / max) * innerH;
+                return [x, y];
+            });
+
+            const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ');
+            const areaPath = series.length > 1
+                ? `${linePath} L ${points[points.length - 1][0].toFixed(1)} ${(padY + innerH).toFixed(1)} L ${points[0][0].toFixed(1)} ${(padY + innerH).toFixed(1)} Z`
+                : '';
+
+            const ticks = [];
+            for (let i = 0; i <= 4; i++) {
+                const y = padY + (innerH / 4) * i;
+                ticks.push(`<line x1="${padX}" y1="${y}" x2="${padX + innerW}" y2="${y}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`);
+            }
+
+            const lastPoint = points[points.length - 1];
+
+            svg.innerHTML = `
+                <defs>
+                    <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#00D4FF" stop-opacity="0.35"/>
+                        <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
+                    </linearGradient>
+                </defs>
+                ${ticks.join('')}
+                ${areaPath ? `<path d="${areaPath}" fill="url(#chartFill)"/>` : ''}
+                <path d="${linePath}" fill="none" stroke="#00D4FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="${lastPoint[0].toFixed(1)}" cy="${lastPoint[1].toFixed(1)}" r="4" fill="#00D4FF"/>
+                <line id="chartHoverLine" x1="0" y1="${padY}" x2="0" y2="${padY + innerH}" stroke="rgba(0,212,255,0.4)" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>
+                <circle id="chartHoverDot" cx="0" cy="0" r="5" fill="#00D4FF" stroke="#0A1628" stroke-width="2" opacity="0"/>
+            `;
+
+            // Cache geometry for hover lookups
+            chartGeom = {
+                series,
+                points,
+                metric,
+                bucket,
+                viewBox: { width, height, padX, padY, innerW, innerH }
+            };
+        }
+
+        function handleChartHover(e) {
+            if (!chartGeom) return;
+            const svg = e.currentTarget;
+            const rect = svg.getBoundingClientRect();
+            const tooltip = document.getElementById('chartTooltip');
+
+            // Translate from screen px → SVG viewBox px
+            const xRatio = chartGeom.viewBox.width / rect.width;
+            const xVB = (e.clientX - rect.left) * xRatio;
+
+            // Find nearest data point by x
+            let nearestIdx = 0;
+            let nearestDx = Infinity;
+            for (let i = 0; i < chartGeom.points.length; i++) {
+                const dx = Math.abs(chartGeom.points[i][0] - xVB);
+                if (dx < nearestDx) { nearestDx = dx; nearestIdx = i; }
+            }
+
+            const row = chartGeom.series[nearestIdx];
+            const point = chartGeom.points[nearestIdx];
+
+            // Move hover dot + vertical guide
+            const dot = document.getElementById('chartHoverDot');
+            const line = document.getElementById('chartHoverLine');
+            if (dot) {
+                dot.setAttribute('cx', point[0].toFixed(1));
+                dot.setAttribute('cy', point[1].toFixed(1));
+                dot.setAttribute('opacity', '1');
+            }
+            if (line) {
+                line.setAttribute('x1', point[0].toFixed(1));
+                line.setAttribute('x2', point[0].toFixed(1));
+                line.setAttribute('opacity', '1');
+            }
+
+            // Position tooltip in screen px (relative to .chart-wrap)
+            const screenX = (point[0] / chartGeom.viewBox.width) * rect.width;
+            const screenY = (point[1] / chartGeom.viewBox.height) * rect.height;
+
+            // Clamp horizontally so the tooltip doesn't overflow
+            const tooltipMax = rect.width - 8;
+            const clampedX = Math.max(80, Math.min(tooltipMax - 80, screenX));
+
+            tooltip.style.left = `${clampedX}px`;
+            tooltip.style.top = `${screenY - 12}px`;
+
+            const isRevenue = chartGeom.metric === 'revenue';
+            const primaryLabel = isRevenue ? 'Revenue' : 'Orders';
+            const primaryValue = isRevenue ? fmtINR(row.revenue || 0) : `${row.orders || 0}`;
+            const secondaryLabel = isRevenue ? 'Orders' : 'Revenue';
+            const secondaryValue = isRevenue ? `${row.orders || 0}` : fmtINR(row.revenue || 0);
+
+            tooltip.innerHTML = `
+                <div class="tt-date">${formatBucketLabel(row, chartGeom.bucket)}</div>
+                <div class="tt-row"><span class="tt-label">${primaryLabel}</span><span class="tt-value">${primaryValue}</span></div>
+                <div class="tt-row dim"><span class="tt-label">${secondaryLabel}</span><span class="tt-value">${secondaryValue}</span></div>
+            `;
+            tooltip.classList.add('visible');
+        }
+
+        function formatWindowLabel(days) {
+            if (days >= 3650) return 'all-time';
+            if (days >= 365) return days === 365 ? 'last 12mo' : `last ${Math.round(days / 365)}y`;
+            if (days >= 30) return `last ${Math.round(days / 30)}mo`;
+            return `last ${days}d`;
+        }
+
+        function formatBucketLabel(row, bucket) {
+            const d = new Date(row.date);
+            if (bucket === 'day') {
+                return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+            }
+            if (bucket === 'week') {
+                const end = new Date(d.getTime() + 6 * 86400000);
+                const sameMonth = d.getMonth() === end.getMonth();
+                const startStr = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+                const endStr = end.toLocaleDateString('en-IN', { day: 'numeric', month: sameMonth ? undefined : 'short' });
+                return `${startStr} – ${endStr}`;
+            }
+            return d.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+        }
+
+        function renderRecentOrders(orders) {
+            const tbody = document.getElementById('recentOrdersBody');
+            if (!orders || !orders.length) {
+                tbody.innerHTML = '<tr><td colspan="5"><div class="dash-empty">No orders yet.</div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = orders.map(o => {
+                const customerName = o.customer?.name || o.shippingAddress?.fullName || 'Guest';
+                const status = (o.status || 'pending').toLowerCase();
+                return `
+                    <tr style="cursor:pointer;" onclick="window.location.href='orders.html?orderId=${o._id}'">
+                        <td><span style="font-family: 'Menlo', monospace; font-size: 12px;">${escapeHtml(o.orderNumber || o._id)}</span></td>
+                        <td>${escapeHtml(customerName)}</td>
+                        <td>${fmtINR(o.total || 0)}</td>
+                        <td><span class="order-status-pill ${status}">${status}</span></td>
+                        <td style="color: var(--text-muted); font-size: 12px;">${formatRelative(o.createdAt)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderTopProducts(products, days) {
+            const list = document.getElementById('topProductsList');
+            const meta = document.getElementById('topProductsMeta');
+            meta.textContent = `last ${days}d`;
+            if (!products || !products.length) {
+                list.innerHTML = '<div class="dash-empty">No sales in this window.</div>';
+                return;
+            }
+            list.innerHTML = products.map(p => `
+                <div class="dash-list-row">
+                    ${p.image ? `<img src="${p.image}" alt="" class="thumb">` : '<div class="thumb"></div>'}
+                    <div class="meta">
+                        <div class="title">${escapeHtml(p.name || p._id || 'Unknown')}</div>
+                        <div class="sub">${p.units} units sold</div>
+                    </div>
+                    <div class="stat"><strong>${fmtINR(p.revenue)}</strong></div>
+                </div>
+            `).join('');
+        }
+
+        function renderLatestCustomers(customers) {
+            const list = document.getElementById('latestCustomersList');
+            if (!customers || !customers.length) {
+                list.innerHTML = '<div class="dash-empty">No customers yet.</div>';
+                return;
+            }
+            list.innerHTML = customers.map(c => {
+                const initials = (c.name || c.mobile || '?').slice(0, 1).toUpperCase();
+                return `
+                    <div class="dash-list-row">
+                        <div class="thumb" style="display:flex; align-items:center; justify-content:center; font-weight:600; color:var(--primary);">${initials}</div>
+                        <div class="meta">
+                            <div class="title">${escapeHtml(c.name || 'Unnamed')}</div>
+                            <div class="sub">${escapeHtml(c.mobile || c.email || '')}</div>
+                        </div>
+                        <div class="stat" style="font-size:11px; color: var(--text-muted);">${formatRelative(c.createdAt)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ====== Helpers ======
+        function fmtINR(n) {
+            const value = Number(n) || 0;
+            if (value >= 10000000) return `₹${(value / 10000000).toFixed(2)}Cr`;
+            if (value >= 100000) return `₹${(value / 100000).toFixed(2)}L`;
+            if (value >= 1000) return `₹${(value / 1000).toFixed(1)}k`;
+            return `₹${Math.round(value).toLocaleString('en-IN')}`;
+        }
+
+        function escapeHtml(s) {
+            return String(s == null ? '' : s)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function formatRelative(iso) {
+            if (!iso) return '';
+            const d = new Date(iso);
+            const diff = Date.now() - d.getTime();
+            const m = 60 * 1000, h = 60 * m, day = 24 * h;
+            if (diff < h) return `${Math.max(1, Math.round(diff / m))}m ago`;
+            if (diff < day) return `${Math.round(diff / h)}h ago`;
+            if (diff < 7 * day) return `${Math.round(diff / day)}d ago`;
+            return d.toLocaleDateString();
+        }
     </script>
 </body>
 </html>

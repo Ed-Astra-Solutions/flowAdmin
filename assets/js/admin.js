@@ -1122,6 +1122,7 @@ function openAddReviewModal() {
     document.getElementById('submitReviewBtn').textContent = 'Add Review';
     document.getElementById('reviewForm').reset();
     document.getElementById('reviewRating').value = 5;
+    document.getElementById('reviewProfession').value = '';
     updateStarDisplay(5);
     openModal('reviewModal');
 }
@@ -1137,6 +1138,7 @@ function openEditReviewModal(reviewId) {
     document.getElementById('submitReviewBtn').textContent = 'Update Review';
     
     document.getElementById('reviewAuthor').value = review.author || '';
+    document.getElementById('reviewProfession').value = review.profession || '';
     document.getElementById('reviewTitle').value = review.title || '';
     document.getElementById('reviewContent').value = review.content || '';
     document.getElementById('reviewVerified').checked = review.verified !== false;
@@ -1156,6 +1158,7 @@ async function handleReviewSubmit(e) {
     
     const reviewData = {
         author: document.getElementById('reviewAuthor').value.trim(),
+        profession: document.getElementById('reviewProfession').value.trim(),
         rating: parseInt(document.getElementById('reviewRating').value),
         title: document.getElementById('reviewTitle').value.trim(),
         content: document.getElementById('reviewContent').value.trim(),
@@ -1275,7 +1278,7 @@ function renderReviewsList() {
             <div class="review-item">
                 <div class="review-item-content">
                     <div class="review-item-header">
-                        <span class="review-author">${escapeHtml(review.author)}</span>
+                        <span class="review-author">${escapeHtml(review.author)}</span>${review.profession ? `<span class="review-profession" style="font-size:12px;color:var(--text-muted);margin-left:6px;">· ${escapeHtml(review.profession)}</span>` : ''}
                         <span class="review-stars">${stars}</span>
                         ${review.verified ? '<span class="review-verified">Verified</span>' : ''}
                     </div>

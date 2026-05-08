@@ -1461,6 +1461,51 @@
                                 </div>
                             </div>
 
+                            <!-- Events Section Editor -->
+                            <div class="control-section">
+                                <h3 class="control-section-title">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="9" cy="7" r="4"/>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                    </svg>
+                                    Events Section
+                                </h3>
+                                <p style="color: var(--text-muted); margin-bottom: 16px; font-size: 14px;">
+                                    Edit the heading copy for the "Events We Power" section on the homepage.
+                                </p>
+                                <div class="control-group">
+                                    <div class="control-row">
+                                        <div class="control-info">
+                                            <h4>Section Tag</h4>
+                                            <p>Small label above the title (e.g. "Where Flow Shows Up")</p>
+                                        </div>
+                                        <div class="control-action" style="flex: 1; max-width: 400px;">
+                                            <input type="text" class="form-input" id="eventsSectionTag" placeholder="Where Flow Shows Up">
+                                        </div>
+                                    </div>
+                                    <div class="control-row">
+                                        <div class="control-info">
+                                            <h4>Section Title</h4>
+                                            <p>Main heading (e.g. "Events We Power")</p>
+                                        </div>
+                                        <div class="control-action" style="flex: 1; max-width: 400px;">
+                                            <input type="text" class="form-input" id="eventsSectionTitle" placeholder="Events We Power">
+                                        </div>
+                                    </div>
+                                    <div class="control-row">
+                                        <div class="control-info">
+                                            <h4>Section Subtitle</h4>
+                                            <p>Description text below the title</p>
+                                        </div>
+                                        <div class="control-action" style="flex: 1; max-width: 400px;">
+                                            <textarea class="form-textarea" id="eventsSectionSubtitle" placeholder="Marathons, rides, tournaments..." style="min-height: 60px;"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Announcement Bar -->
                             <div class="control-section">
                                 <h3 class="control-section-title">
@@ -1900,6 +1945,17 @@
                         document.getElementById('announcementText').value = settings.announcement.text || '';
                     }
 
+                    // Load events section
+                    if (settings.eventsSection) {
+                        document.getElementById('eventsSectionTag').value = settings.eventsSection.tag || '';
+                        document.getElementById('eventsSectionTitle').value = settings.eventsSection.title || '';
+                        document.getElementById('eventsSectionSubtitle').value = settings.eventsSection.subtitle || '';
+                    } else {
+                        document.getElementById('eventsSectionTag').value = 'Where Flow Shows Up';
+                        document.getElementById('eventsSectionTitle').value = 'Events We Power';
+                        document.getElementById('eventsSectionSubtitle').value = 'Marathons, rides, tournaments, training camps — wherever athletes are pushing through, Flow shows up to keep them hydrated.';
+                    }
+
                     // Load ingredients section
                     if (settings.ingredientsSection) {
                         document.getElementById('ingredientsSectionTitle').value = settings.ingredientsSection.title || '';
@@ -1962,6 +2018,11 @@
                 },
                 statsBar: {
                     items: getStatsData()
+                },
+                eventsSection: {
+                    tag:      document.getElementById('eventsSectionTag').value,
+                    title:    document.getElementById('eventsSectionTitle').value,
+                    subtitle: document.getElementById('eventsSectionSubtitle').value
                 }
             };
 
